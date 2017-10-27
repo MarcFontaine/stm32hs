@@ -1,6 +1,7 @@
 Name:          STLinkUSB
-Version:       0.1.0
+Version:       0.1.1
 Category:      Hardware, STM32, Microcontroller
+License-File:  LICENSE
 Synopsis:      STLink USB interface in Haskell
 Description:   This package contains a Haskell driver for ST-Link USB dongles.
                My use case for this driver is the STM32-Zombie library.
@@ -10,6 +11,7 @@ Description:   This package contains a Haskell driver for ST-Link USB dongles.
 
 License:       BSD3
 Author:        2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>
+Maintainer:    2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>               
 Stability:     Experimental
 Tested-With:   GHC == 8.2.1
 Build-Type:    Simple

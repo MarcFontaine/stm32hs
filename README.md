@@ -1,9 +1,10 @@
-# STLinkUSB
+# STM32Fxxx Micro controller hacking in Haskell
 
-This package contains a Haskell driver for ST-Link USB dongles.
-My use case for this driver is the STM32-Zombie library.
+## STM32-Zombie
 The STM32-Zombie library turns a STM32 micro-controller
 into a powerful Haskell-hackable hardware interface.
-The library is a based on information from the openocd library.
 
-## [Haddock documentation](http://hackage.haskell.org/package/STLinkUSB)
+## STLinkUSB
+This package contains a Haskell driver for ST-Link USB dongles.
+The library is a based on information from the openocd library.
+[Haddock documentation](http://hackage.haskell.org/package/STLinkUSB)

@@ -20,7 +20,7 @@ Extra-Source-Files:  README.md
                     
 Source-Repository head
   type:     git
-  location: git://github.com/MarcFontaine/STLinkUSB
+  location: git://github.com/MarcFontaine/stm32hs
 
 library
   default-language  : Haskell2010

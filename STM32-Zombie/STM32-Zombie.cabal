@@ -1,7 +1,8 @@
 Name:          STM32-Zombie
-Version:       0.1
+Version:       0.1.1
 Category:      STM32, Hardware, Microcontroller
-Synopsis:      control a STM32F103 microcontroller from Haskell
+License-File:  LICENSE
+Synopsis:      control a STM32F103 microcontroller
 Description:
             This library turns a STM32F103 board into a powerful Haskell hackable
             IO adapter. Features are GPIO pins, serial ports, SPI ports, DMA
@@ -11,7 +12,8 @@ Description:
             The library has a rather low-level interface, which
             allows one to control many details of the micro controller hardware
             and can also be used to build higher level abstraction.
-            See App.Blink in the App-folder and the github page
+            See the "App.Blink" module
+            and the [github page](https://github.com/MarcFontaine/stm32hs)
             
 Copyright:     2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
@@ -34,8 +36,8 @@ library
                     , transformers
                     , containers
                     , binary
-                    , STM32F103xx-SVD
-                    , STLinkUSB
+                    , STM32F103xx-SVD <0.2
+                    , STLinkUSB <0.2
 		    
   hs-source-dirs: src
   exposed-modules:

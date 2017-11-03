@@ -1,6 +1,6 @@
 Name:          SVD2HS
 Version:       0.1
-Category:      STM32, Hardware, Microcontroller, SVD
+Category:      STM32, Hardware, Microcontroller, SVD, Embedded
 License-File:  LICENSE
 Synopsis:      Translate a SVD of a micro controller to Haskell tables
 Description:   Translate a SVD description of a micro controller to Haskell tables

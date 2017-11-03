@@ -1,6 +1,6 @@
 Name:          STM32-Zombie
 Version:       0.2.0
-Category:      STM32, Hardware, Microcontroller
+Category:      STM32, Hardware, Microcontroller, Embedded
 License-File:  LICENSE
 Synopsis:      control a STM32F103 microcontroller
 Description:

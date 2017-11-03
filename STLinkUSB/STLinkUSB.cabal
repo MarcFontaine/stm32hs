@@ -1,6 +1,6 @@
 Name:          STLinkUSB
 Version:       0.1.1
-Category:      Hardware, STM32, Microcontroller
+Category:      Hardware, STM32, Microcontroller, Embedded
 License-File:  LICENSE
 Synopsis:      STLink USB interface in Haskell
 Description:   This package contains a Haskell driver for ST-Link USB dongles.

@@ -1,6 +1,6 @@
 Name:          STM32F103xx-SVD
 Version:       0.1
-Category:      STM32, Hardware, Microcontroller
+Category:      STM32, Hardware, Microcontroller, Embedded
 License-File:  LicenseInfo
 Synopsis:      Definition for peripherals, registers and Fields
                from STM32F103xx.svd

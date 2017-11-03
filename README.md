@@ -16,7 +16,13 @@ its own brain.
 I have tested the library with the following hardware:
 
 * ST-Link USB dongle (Google for "ST-Link V2 stlink mini STM8STM32 STLINK simulator")
+
+![ST-Link USB dongle](https://i.imgur.com/Y4iEvVt.jpg)
+
 * A STM32F103 breakout board (Google for " "STM32F103C8T6 ARM STM32 Minimum System Development Board Module")
+
+![STM32F103C8T6 board](https://imgur.com/Xb4mOFa.jpg)
+![STM32F103C8T6 board](https://imgur.com/qMCp6au.jpg)
 
 The USB dongle as well as the breakout boards are available in China starting
 at about US$2.

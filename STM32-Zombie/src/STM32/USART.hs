@@ -161,7 +161,7 @@ configure UartPort {..} config = do
   RCC.peripheralClockOn $ fst _UartRXWire
   RCC.peripheralClockOn AFIO
 
-  GPIO.pinMode _UartTXWire (AlternateOutPushPull Mhz_2)
+  GPIO.pinMode _UartTXWire (AlternateOutPushPull MHz_2)
   GPIO.pinMode _UartRXWire InputFloating
 
   STM32.USART.enable _UartPeripheral

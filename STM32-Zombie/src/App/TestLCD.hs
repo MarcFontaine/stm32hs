@@ -6,11 +6,10 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- The LCDDemo module has been copied from the hArduino package.
--- This is the System.Hardware.Arduino.Parts.TestLCD module
--- with some minor adaption for STM32.
--- System.Hardware.Arduino.Parts.TestLCD is copyright by Levent Erkok
--- 
+-- The LCDDemo module has been copied from
+-- System.Hardware.Arduino.Parts.TestLCD in the hArduino package.
+-- The original Author of this code is Levent Erkok.
+-- There have been some minor adaption for STM32. 
 
 module App.TestLCD
 where

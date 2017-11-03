@@ -8,9 +8,9 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- Digital Analog Converters
+-- Digital Analog Converters.
 -- This is untested.
--- The cheap STM32F103C8T6 boards don't hava a DAC included.
+-- The cheap STM32F103C8T6 boards don't have a built-in DAC.
 {-# LANGUAGE OverloadedStrings #-}
 module STM32.DAC
 where

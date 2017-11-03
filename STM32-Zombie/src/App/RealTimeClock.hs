@@ -12,7 +12,6 @@
 
 module App.RealTimeClock
 where
-import Control.Monad
 
 import STM32.API
 import qualified STM32.RTC as RTC

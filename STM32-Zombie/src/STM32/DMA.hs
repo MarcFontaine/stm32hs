@@ -8,11 +8,12 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- Direct Memory Access
--- The DMA controller is one of the coolest features of STM32Fxxx
+-- 
+-- The direct memory access (DMA)
+-- controller is one of the coolest features of STM32Fxxx
 -- micro controllers. 
--- For example with DMA one can sample analog signals at a fast and precise
--- sampling rate.
+-- For example, one can sample signals at a fast and precise
+-- sampling rate or generate wave-form patterns using DMA transfers.
 -- DMA transfers run completely independent and in parallel
 -- from the CPU or the Haskell code.
 

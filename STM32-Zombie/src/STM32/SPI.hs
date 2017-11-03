@@ -8,7 +8,7 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 -- 
--- The SPI periveral
+-- The SPI peripheral.
 
 {-# LANGUAGE OverloadedStrings #-}
 module STM32.SPI

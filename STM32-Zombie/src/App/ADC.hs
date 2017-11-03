@@ -8,12 +8,11 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- Example for the analog digital converter.
--- The ADC of the STM32 works best with DMA transfers.
+-- This module shows an example for using the analog digital converter.
+-- The ADC of the STM32 works best in combination with DMA transfers.
 -- This example turns the STM32 into a small digital storage oscilloscope.
--- As this works with DMA transfers, one can sample with precise timings
--- and  the block size and the sampling rate are not limited by the speed of
--- the Haskell code.
+-- Thanks to DMA transfers, one can sample with precise timings
+-- and sampling rate is not limited by the speed of the Haskell code.
 
 module App.ADC
 where

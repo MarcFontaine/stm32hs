@@ -10,8 +10,8 @@
 --
 -- This example show the combination of hardware timers with hardware DMA.
 -- Timer 4 triggers DMA1_Channel7 and the DMA writes data to the USART.
--- Instead of the USART its also possible to write to any other periveral.
--- Applications are wave form generation or any hard-real-time control. 
+-- Instead of the USART its also possible to write to any other peripheral.
+-- Applications are wave-form-generation or hard-real-time control. 
 
 module App.TimerDMA
 where

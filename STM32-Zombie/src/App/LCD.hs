@@ -6,9 +6,10 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- The LCD module has been copied from the hArduino package.
--- This is the System.Hardware.Arduino.Parts.LCD ((c) Levent Erkok)
--- with some minor adaption for STM32.
+-- The LCD module has been copied from
+-- System.Hardware.Arduino.Parts.LCD in the hArduino package.
+-- The original Author of this code is Levent Erkok.
+-- There have been some minor adaption for STM32.
 
 {-# LANGUAGE NamedFieldPuns #-}
 module App.LCD(
@@ -123,7 +124,7 @@ getCmdVal Hitachi44780{lcdRows, dotMode5x10} = get
 initLCD :: LCD -> LCDController -> MI ()
 initLCD lcd c@Hitachi44780{lcdRS, lcdEN, lcdD4, lcdD5, lcdD6, lcdD7} = do
     debug "Starting the LCD initialization sequence"
-    mapM_ (\w -> GPIO.pinMode w $  GPOutPushPull Mhz_2)
+    mapM_ (\w -> GPIO.pinMode w $  GPOutPushPull MHz_2)
                 [lcdRS, lcdEN, lcdD4, lcdD5, lcdD6, lcdD7]
     -- Wait for 50ms, data-sheet says at least 40ms for 2.7V version, so be safe
     delay 50

@@ -8,8 +8,8 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- Clock control
--- Resetting parts of the hardware.
+-- Clock control and
+-- resetting parts of the hardware.
 
 {-# LANGUAGE OverloadedStrings #-}
 module STM32.RCC

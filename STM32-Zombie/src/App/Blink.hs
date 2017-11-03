@@ -26,7 +26,7 @@ blinkLED led = do
   resetHalt
   let (port,_) = led
   peripheralClockOn port
-  pinMode led $ GPOutPushPull Mhz_2
+  pinMode led $ GPOutPushPull MHz_2
   forever $ do
      pinHigh led
      delay 500000

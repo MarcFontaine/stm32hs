@@ -1,3 +1,15 @@
+----------------------------------------------------------------------------
+-- |
+-- Module      :  STM32.RTC
+-- Copyright   :  (c) Marc Fontaine 2017
+-- License     :  BSD3
+-- 
+-- Maintainer  :  Marc.Fontaine@gmx.de
+-- Stability   :  experimental
+-- Portability :  GHC-only
+--
+-- The real time clock.
+
 module STM32.RTC
 where
 
@@ -34,8 +46,8 @@ addJustCounter offset = do
   setCounter $ t + offset
 
 
--- setup the batterie powered real-time-clock
--- requieres backup battery and Low speed external crystal
+-- | Setup the batterie powered real-time-clock.
+-- The board should have a backup battery and a low speed external crystal.
 setupLSE_RTC :: Word32 -> MI ()
 setupLSE_RTC epoch = do
   RCC.peripheralClockOn BKP

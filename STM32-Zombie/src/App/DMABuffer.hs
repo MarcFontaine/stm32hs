@@ -8,7 +8,7 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- In this example the controller reads chars from the USART
+-- In this example, the controller reads chars from the USART
 -- and writes them to a RAM buffer using DMA.
 
 {-# LANGUAGE OverloadedStrings #-}
@@ -30,8 +30,8 @@ import Data.Char (chr,isPrint)
 
 
 -- | Initialize the Hardware and keep polling the DMA Buffer.
--- This loops for ever but the DMA transfer is only oneshot.
--- (after the buffer is full nothing interesting happens) 
+-- This function loops for ever.
+-- Though after the buffer is full nothing interesting happens.
 readCommDMA :: IO ()
 readCommDMA = runMI $ do
   initMI
@@ -42,7 +42,7 @@ readCommDMA = runMI $ do
   peripheralClockOn GPIOA
   peripheralClockOn AFIO
 
-  GPIO.pinMode (GPIOA,Pin_9) (AlternateOutPushPull Mhz_2)
+  GPIO.pinMode (GPIOA,Pin_9) (AlternateOutPushPull MHz_2)
   GPIO.pinMode (GPIOA,Pin_10) InputPullUp
 
   USART.enable USART1
@@ -78,9 +78,9 @@ readCommDMA = runMI $ do
 
 
 -- | Initialize the Hardware and keep polling the DMA Buffer.
--- This function uses a ring buffer that wraps over when filled up.
--- In this example DMA controller reads Bytes (8 Bit) from the UART
--- and writes half words (16 Bit) to then RAM or in other words
+-- 'uartRingBuffer' uses a ring buffer that wraps over when filled up.
+-- The DMA controller is configured to read Bytes (8 Bit) from the UART
+-- and write half words (16 Bit) to then RAM. This means
 -- it transfers a char and clears out the next byte to flag that this position
 -- in the buffer has been written.
 
@@ -95,7 +95,7 @@ uartRingBuffer = runMI $ do
   peripheralClockOn GPIOA
   peripheralClockOn AFIO
 
-  GPIO.pinMode (GPIOA,Pin_9) (AlternateOutPushPull Mhz_2)
+  GPIO.pinMode (GPIOA,Pin_9) (AlternateOutPushPull MHz_2)
   GPIO.pinMode (GPIOA,Pin_10) InputPullUp
 
   USART.enable USART1

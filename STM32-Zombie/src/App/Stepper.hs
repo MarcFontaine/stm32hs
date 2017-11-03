@@ -35,8 +35,8 @@ runStepperDelay pause dir steps = runMI $ do
   initMI
   resetHalt
   peripheralClockOn port
-  pinMode dirWire $ GPOutPushPull Mhz_2
-  pinMode stepWire $ GPOutPushPull Mhz_2
+  pinMode dirWire $ GPOutPushPull MHz_2
+  pinMode stepWire $ GPOutPushPull MHz_2
   case dir of
     CW  -> pinHigh dirWire
     CCW -> pinLow dirWire

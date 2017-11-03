@@ -36,16 +36,16 @@ pinLow :: Wire -> MI ()
 pinLow w = pinOut w False
 
 data Speed
-  = Mhz_10
-  | Mhz_2
-  | Mhz_50
+  = MHz_10
+  | MHz_2
+  | MHz_50
   deriving (Eq,Ord,Show)
 
 instance ToBitField Speed where
   toBitField s = case s of
-    Mhz_10 -> "01"
-    Mhz_2  -> "10"
-    Mhz_50 -> "11"
+    MHz_10 -> "01"
+    MHz_2  -> "10"
+    MHz_50 -> "11"
         
 data PinMode
   = GPOutPushPull Speed

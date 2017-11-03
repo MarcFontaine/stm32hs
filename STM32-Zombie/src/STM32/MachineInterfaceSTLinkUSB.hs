@@ -8,10 +8,12 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 -- 
--- This is the (internal) API for communitions over ST-Link USB dongles.
+-- STM32.MachineInterfaceSTLinkUSB is the (internal)
+-- API for communication with the STM32Fxxx boards
+-- All communication runs through these function.
 -- The main driver for ST-Link USB dongles is in the STLinkUSB package.
--- This module contains some small wrappers for functions from STM32.STLinkUSB
--- module.
+-- This module contains some small wrappers for functions from STM32.STLinkUSB.
+--
 
 module STM32.MachineInterfaceSTLinkUSB
 (

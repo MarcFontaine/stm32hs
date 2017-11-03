@@ -1,15 +1,16 @@
 Name:          STM32-Zombie
-Version:       0.1.1
+Version:       0.2.0
 Category:      STM32, Hardware, Microcontroller
 License-File:  LICENSE
 Synopsis:      control a STM32F103 microcontroller
 Description:
-            This library turns a STM32F103 board into a powerful Haskell hackable
-            IO adapter. Features are GPIO pins, serial ports, SPI ports, DMA
-            ADC, timers,..
+            The STM32-Zombie library turns a STM32F103 board into a
+            powerful Haskell hackable IO adapter.
+            Features are GPIO pins, serial ports, SPI ports, DMA ADC, timers,..
             The library is modeled after the STMicroelectronics
-            STM32F10x Firmware Library.
-            The library has a rather low-level interface, which
+            STM32F10x Firmware Library but does not rely on any c-code or
+            cross-compilation
+            STM32-Zombie has a low-level interface, which
             allows one to control many details of the micro controller hardware
             and can also be used to build higher level abstraction.
             See the "App.Blink" module

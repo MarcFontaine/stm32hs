@@ -8,11 +8,12 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- The WS1228Bs are popular RGB LED controllers for colorful decorations and
--- mood lights etc.
--- For proper operation the WS1228B requires fast and acurate timing.
+-- The popular WS1228B module consists of a RGB LED and an included LED controller.
+-- Many WS1228B modules can be chained up to build LED strips
+-- for colorful decorations, mood lights etc.
+-- For proper operation the WS1228B requires fast and accurate timing.
 -- The example works with combination of SPI and DMA.
--- With the SPI port it is possible to shift out a raw bitstream.
+-- With the SPI port it is possible to shift out a raw bit-stream.
 -- (i.e. play a one-bit sampled wave-form).
 -- (This is not possible with the USART because the USART would add start and stop bits)
 
@@ -34,11 +35,11 @@ data RGB = RGB Word8 Word8 Word8
 testLEDs :: IO ()
 testLEDs = sendLEDs [red,green,blue,black,white]
 
--- | turn off the first 30 LEDs (== set the color to black black)
+-- | turn off the first 30 LEDs (== set the color to black)
 ledsOff30 :: IO ()
 ledsOff30 = sendLEDs $ replicate 30 black
 
--- | set the LEDs to a list of colors.
+-- | set the LED strip to a list of colors.
 sendLEDs :: [RGB] -> IO ()
 sendLEDs colors = runMI $ do
   initSPI
@@ -76,7 +77,7 @@ encodeRGB (RGB r g b)
     (b3,b2,b1) = lineCodeWord8 b
 
 -- | Encode an Word8 according to the WS1228B line code.
--- each bit get extended to three bits
+-- Each data bit is extended to a three bit line code.
 lineCodeWord8 :: Word8 -> (Word8,Word8,Word8)
 lineCodeWord8 b = (c1,c2,c3)
   where
@@ -128,8 +129,8 @@ initSPI = do
   peripheralClockOn GPIOB
   peripheralClockOn GPIOC
   peripheralClockOn SPI2
-  pinMode led $ GPOutPushPull Mhz_2
-  pinMode spi_mosi $ GPIO.AlternateOutPushPull Mhz_2
+  pinMode led $ GPOutPushPull MHz_2
+  pinMode spi_mosi $ GPIO.AlternateOutPushPull MHz_2
   SPI.init SPI2 spiConfig
   bitSet SPI2 CR2_TXDMAEN
 
@@ -162,7 +163,7 @@ sendSPI bs = do
 
   return ()
 
--- | Animate LEDs and show some wave like lighting pattern
+-- | Animate a LED strip and show some wave-like lighting pattern.
 testWave :: IO ()
 testWave = runMI $ do
   initSPI

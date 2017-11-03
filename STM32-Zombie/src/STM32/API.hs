@@ -9,7 +9,7 @@
 -- Portability :  GHC-only
 --
 -- The general part of the API.
--- The module for the periveral (GPIO, USART,ADC,..) is included separately.
+-- The module for the peripheral (GPIO, USART,ADC,..) has to be imported separately.
 
 module STM32.API
 (

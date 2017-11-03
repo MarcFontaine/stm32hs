@@ -8,7 +8,7 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- Untested work in progress
+-- Untested // Work in progress
 {-# LANGUAGE OverloadedStrings #-}
 module STM32.I2C
 where

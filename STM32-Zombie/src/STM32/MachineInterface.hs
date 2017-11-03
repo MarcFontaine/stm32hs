@@ -8,9 +8,9 @@
 -- Stability   :  experimental
 -- Portability :  GHC-only
 -- 
--- At the moment there is just one implementation for the MachineInterface
+-- At the moment, there is just one implementation for the MachineInterface
 -- namely STM32.MachineInterfaceSTLinkUSB.
--- All direct communication with the microcontroller runs through this API.
+-- All direct communication with the micro controller runs through this API.
 -- 
 
 module STM32.MachineInterface

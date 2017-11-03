@@ -20,12 +20,11 @@ Stability:     Experimental
 Tested-With:   GHC == 8.2.1
 Author:        Marc Fontaine
 Build-Type:    Simple
-Cabal-Version: >= 1.22
-                    
+Cabal-Version: >= 1.24
+
 Source-Repository head
   type:     git
   location: git://github.com/MarcFontaine/stm32hs
-
                
 library
   default-language  : Haskell2010

@@ -2,11 +2,11 @@
 
 ## STM32-Zombie
 
-The STM32-Zombie library turns a STM32 micro-controller
+The STM32-Zombie library turns a STM32 microcontroller
 into a powerful Haskell-hackable hardware interface.
 It gives the user full control of the STM32Fxxx hardware peripherals
 without the need to write any c-code, without cross-compiler tool chain
-and even without any particular micro controller firmware.
+and even without any particular microcontroller firmware.
 The library is called STM-32 Zombie because it halts the brain,
 i.e. the ARM CPU of the controller board and instead uses the on-cip-debugging
 features of the controller. The boards run like a Zombie without using
@@ -29,8 +29,8 @@ at about US$2.
 The cheap ST-link clones and the breakout boards work well but the US$2
 ST-Link clones provide no electrical isolation to protect your PC or Laptop.
 Experimenting with Hardware is a lot of fun until you let the magic smoke out.
-Brand ST-Link boards, that guarantee electrical isolation and full protection
-of the PC, are very affordable and may be a good investing.
+A ST-LINK/V2-ISOL programmer, that guaranties electrical isolation
+and full protection of the PC, is very affordable and may be a good investing.
 
 ## How it Works
 One end of ST-Link dongle plugs into the PC USB port the other end is the so called
@@ -62,7 +62,7 @@ high frequency sampling of digital inputs or generation of high frequency
 digital output patterns.
 
 The library does not cover all of the STM32 hardware.
-I add support for something when I need it in a particular hardware project.
+I add support for something when I need it in a particular project.
 (For example I have not tried the USB features of the boards,
 which seems to be very interesting project)
 
@@ -86,24 +86,28 @@ Hello world example for serial ports.
 
 ## Todo
 
-## Support packages
-Parts of the functionality are packaged separately
+## Packages
+### STM32-Zombie
+[![Hackage](https://img.shields.io/hackage/v/STM32-Zombie.svg)](http://hackage.haskell.org/package/STM32-Zombie)
 
 ### STLinkUSB
+[![Hackage](https://img.shields.io/hackage/v/STLinkUSB.svg)](http://hackage.haskell.org/package/STLinkUSB)
+
 The STLinkUSB package contains a Haskell driver for ST-Link USB dongles.
 The library is based on information from the openocd library.
 The STM32-Zombie package only uses a small subset of the ST-Link features
 and only these features of ST-Link protocol are really tested and included
 in STLinkUSB. (There is some extra but untested code). 
-[Haddock documentation](http://hackage.haskell.org/package/STLinkUSB)
-
 
 ### STM32F103xx-SVD
+[![Hackage](https://img.shields.io/hackage/v/STM32F103xx-SVD.svg)](http://hackage.haskell.org/package/STM32F103xx-SVD)
+
 This package contains names and definitions for STM32F103 peripherals,
 registers, addresses and the bits of the hardware registers.
 It is generated from STM32F103xx.svd.
-[Haddock documentation](http://hackage.haskell.org/package/STM32F103xx-SVD)
 
 ### SVD2HS
+[![Hackage](https://img.shields.io/hackage/v/SVD2HS.svg)](http://hackage.haskell.org/package/SVD2HS)
+
 The compiler that translates a file called STM32F103xx.svd to a set of
 Haskell data types and lookup tables.

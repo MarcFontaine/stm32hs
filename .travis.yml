@@ -1,0 +1,24 @@
+dist: trusty
+sudo: false
+
+dist: precise
+sudo: false
+
+language: haskell
+
+install: true
+
+os:
+  - linux
+  - osx
+
+ghc:
+  - "7.10"
+  - "8.0"
+  - "8.2"
+
+env:
+  - PACKAGEDIR="SVD2HS"
+  - PACKAGEDIR="STM32F103xx-SVD"
+  - PACKAGEDIR="STLinkUSB"
+  - PACKAGEDIR="STM32-Zombie"

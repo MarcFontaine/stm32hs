@@ -1,9 +1,6 @@
 dist: trusty
 sudo: false
 
-dist: precise
-sudo: false
-
 language: haskell
 
 install: true

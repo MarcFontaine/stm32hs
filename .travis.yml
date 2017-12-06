@@ -13,7 +13,6 @@ os:
   - osx
 
 ghc:
-  - "7.10"
   - "8.0"
   - "8.2"
 
@@ -22,3 +21,4 @@ env:
   - PACKAGEDIR="STM32F103xx-SVD"
   - PACKAGEDIR="STLinkUSB"
   - PACKAGEDIR="STM32-Zombie"
+before_install: cd ${PACKAGEDIR}

@@ -1,5 +1,5 @@
 Name:          SVD2HS
-Version:       0.1
+Version:       0.1.1
 Category:      STM32, Hardware, Microcontroller, SVD, Embedded
 License-File:  LICENSE
 Synopsis:      Translate a SVD of a micro controller to Haskell tables
@@ -9,7 +9,7 @@ Copyright:     2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
 License:       BSD3
 Stability:     Experimental
-Tested-With:   GHC == 8.2.1
+Tested-With:   GHC == 8.2.2
 Author:        Marc Fontaine
 Build-Type:    Simple
 Cabal-Version: >= 1.24

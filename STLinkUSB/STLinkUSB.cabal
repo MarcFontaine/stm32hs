@@ -1,5 +1,5 @@
 Name:          STLinkUSB
-Version:       0.1.1
+Version:       0.1.2
 Category:      Hardware, STM32, Microcontroller, Embedded
 License-File:  LICENSE
 Synopsis:      STLink USB interface in Haskell
@@ -13,14 +13,15 @@ License:       BSD3
 Author:        2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>               
 Stability:     Experimental
-Tested-With:   GHC == 8.2.1
+Tested-With:   GHC == 8.2.2
 Build-Type:    Simple
 Cabal-Version: >= 1.24
+Homepage:      https://github.com/MarcFontaine/stm32hs
 Extra-Source-Files:  README.md
                     
 Source-Repository head
   type:     git
-  location: git://github.com/MarcFontaine/stm32hs
+  location: git://github.com/MarcFontaine/stm32hs.git
 
 library
   default-language  : Haskell2010

@@ -32,7 +32,7 @@ matrix:
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y libusb-dev
+  - sudo apt-get install -y libusb-1.0-0-dev 
   - HC=${CC}
   - HCPKG=${HC/ghc/ghc-pkg}
   - unset CC

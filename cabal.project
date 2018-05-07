@@ -1,0 +1,5 @@
+packages:
+  STLinkUSB
+  STM32F103xx-SVD
+  STM32-Zombie
+  SVD2HS

@@ -1,7 +1,9 @@
+{-# OPTIONS_GHC -Wno-dodgy-imports #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 module SVD2HS
 where
+import Prelude hiding ((<>))
 import Text.XML.Lens hiding (text)
 import qualified Data.Text as Text
 import Data.Text (Text)
@@ -10,20 +12,32 @@ import Text.XML(readFile,def)
 import Text.PrettyPrint      
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Data.Map (Map)
 import qualified Data.Map as Map
        
+selectPeripheral ::
+  Applicative f => (Element -> f Element) -> Document -> f Document
+
 selectPeripheral = root
                   . el "device"
                   ./ el "peripherals"
                   ./ el "peripheral"
+
+selectPeripheralName :: Applicative f => Over (->) f Document Document Text Text
 selectPeripheralName = selectPeripheral ./ el "name" . TXL.text
                  
+selectRegister :: Applicative f => Over (->) f Document Document Element Element
 selectRegister = selectPeripheral ./ el "registers" ./ el "register"
+
+selectRegisterName :: Applicative f => Over (->) f Document Document Text Text
 selectRegisterName = selectRegister ./ el "name" . TXL.text
+
+selectField :: Applicative f => Over (->) f Document Document Element Element
 selectField = selectRegister ./ el "fields" ./ el "field"
+
+selectFieldName :: Applicative f => Over (->) f Document Document Text Text
 selectFieldName = selectField ./ el "name" . TXL.text
 
+svdFile :: FilePath
 svdFile ="STM32F103xx.svd"
                 
 main :: IO ()
@@ -168,9 +182,9 @@ funTable :: String -> [(Doc,Doc)] -> Doc
 funTable funName assocs 
     = vcat $ map mkCase assocs
   where
-    mkCase (argument, value) = hsep [
+    mkCase (patterns, value) = hsep [
        text funName
-      ,argument
+      ,patterns
       ,equals
       ,value
       ]

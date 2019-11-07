@@ -26,8 +26,9 @@ import STM32.SPI as SPI
 import STM32.DMA as DMA
 
 import qualified Data.ByteString as BS
-import Control.Monad
-
+-- import Control.Monad
+import Data.List (tails)
+  
 data RGB = RGB Word8 Word8 Word8
   deriving (Read,Show,Eq,Ord)
 
@@ -185,3 +186,27 @@ redIntensity :: Double -> Word8
 redIntensity d =
   if d >0.4 then floor (d*5)
   else 0
+
+-- this leaks memory !!
+testPattern :: IO ()
+testPattern = runMI $ loop config
+  where
+    loop :: [([RGB], Int, Bool)] -> MI ()
+    loop conf = do
+      let
+          (p, d, dir) = head conf
+          p2 = (\x -> if dir then x else reverse x) $ take 15 p
+          pe = reverse p2 ++ p2
+      sendSPI $ encodeRGBLine pe
+      delay d
+      loop $ tail conf
+
+    config :: [([RGB], Int, Bool)]
+    config = zip3 (tails pat) speed rev
+      
+    pat = cycle [red, red, red, green, green, blue, blue, blue, black, black, black ,black, black]
+    speed = cycle ((reverse ramp ++ (replicate 300 acc) ++ ramp) ++ reverse (reverse ramp ++ (replicate 300 acc) ++ ramp))
+    ramp  = [acc, acc+acc..400000]
+    acc = 10000
+    rev = cycle $ replicate 100 True ++ replicate 100 False
+    

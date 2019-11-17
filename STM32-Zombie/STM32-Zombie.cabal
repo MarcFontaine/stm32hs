@@ -67,3 +67,4 @@ library
     , App.TestLCD
     , App.DMABuffer
     , App.WS1228B
+    , App.TLC5947

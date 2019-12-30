@@ -60,7 +60,7 @@ animateBitBang = runMI $ do
       togglePin xlat
 
 animation :: [[Word16]]
-animation = take 24 $ map (take 24) $ tails $ cycle (4095: replicate 23 0)
+animation = take 24 $ map (take 24) $ tails $ cycle (map ((*) (4096 `div` 23)) [0..23])
 
 togglePin :: Wire -> MI ()
 togglePin w = do
@@ -69,6 +69,6 @@ togglePin w = do
 
 shiftInCurrent :: Word16 -> MI ()
 shiftInCurrent i
-  = forM_ [0..11] $ \b -> do
+  = forM_ [11,10..0] $ \b -> do
        if testBit i b then pinHigh sin else pinLow sin
        togglePin sclk

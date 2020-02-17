@@ -10,10 +10,10 @@ Description:   This package contains a Haskell driver for ST-Link USB dongles.
                The library is a based on information from the openocd library.
 
 License:       BSD3
-Author:        2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>
-Maintainer:    2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>               
+Author:        2015-2020 Marc Fontaine <Marc.Fontaine@gmx.de>
+Maintainer:    2015-2020 Marc Fontaine <Marc.Fontaine@gmx.de>
 Stability:     Experimental
-Tested-With:   GHC == 8.2.2
+Tested-With:   GHC ==8.6.5 || ==8.4.4 || ==8.2.2
 Build-Type:    Simple
 Cabal-Version: >= 1.24
 Homepage:      https://github.com/MarcFontaine/stm32hs

@@ -12,7 +12,7 @@ License:       BSD3
 Author:        Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
 Stability:     Experimental
-Tested-With:   GHC == 8.2.1               
+Tested-With:   GHC ==8.6.5 || ==8.4.4 || ==8.2.2
 Build-Type:    Simple
 Cabal-Version: >= 1.24
 

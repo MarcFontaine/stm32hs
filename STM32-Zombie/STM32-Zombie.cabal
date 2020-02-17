@@ -16,11 +16,11 @@ Description:
             See the "App.Blink" module
             and the [github page](https://github.com/MarcFontaine/stm32hs)
             
-Copyright:     2015-2017 Marc Fontaine <Marc.Fontaine@gmx.de>
+Copyright:     2015-2020 Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
 License:       BSD3
 Stability:     Experimental
-Tested-With:   GHC == 8.2.2
+Tested-With:   GHC ==8.6.5 || ==8.4.4 || ==8.2.2
 Author:        Marc Fontaine
 Build-Type:    Simple
 Cabal-Version: >= 1.24

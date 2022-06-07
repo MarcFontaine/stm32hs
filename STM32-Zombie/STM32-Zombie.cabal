@@ -1,3 +1,5 @@
+Cabal-Version: 3.0
+
 Name:          STM32-Zombie
 Version:       0.2.0.1
 Category:      STM32, Hardware, Microcontroller, Embedded
@@ -16,14 +18,13 @@ Description:
             See the "App.Blink" module
             and the [github page](https://github.com/MarcFontaine/stm32hs)
             
-Copyright:     2015-2020 Marc Fontaine <Marc.Fontaine@gmx.de>
+Copyright:     2015-2022 Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
-License:       BSD3
+License:       BSD-3-Clause
 Stability:     Experimental
-Tested-With:   GHC ==8.6.5 || ==8.4.4 || ==8.2.2
+Tested-With:   GHC ==8.10.7 || ==8.6.5 || ==8.4.4 || ==8.2.2
 Author:        Marc Fontaine
 Build-Type:    Simple
-Cabal-Version: >= 1.24
 
 Source-Repository head
   type:     git

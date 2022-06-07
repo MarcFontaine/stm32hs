@@ -1,3 +1,5 @@
+Cabal-Version: 3.0
+
 Name:          STM32F103xx-SVD
 Version:       0.1
 Category:      STM32, Hardware, Microcontroller, Embedded
@@ -8,13 +10,12 @@ Description:   Definition for peripherals, registers and Fields
                from STM32F103xx.svv.
                This package contains tables, that have been generated from the
                corresponding svd file. Do not edit.
-License:       BSD3
+License:       BSD-3-Clause
 Author:        Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
 Stability:     Experimental
-Tested-With:   GHC ==8.6.5 || ==8.4.4 || ==8.2.2
+Tested-With:   GHC ==8.10.7 || ==8.6.5 || ==8.4.4 || ==8.2.2
 Build-Type:    Simple
-Cabal-Version: >= 1.24
 
 Source-Repository head
   type:     git

@@ -4,12 +4,12 @@
 -- Module      :  STM32.STLinkUSB
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- This module exports a small driver for the STLink dongles. 
+-- This module exports a small driver for the STLink dongles.
 -- The focus of this API is on reading and writing
 -- to the memory of and attached STM32 controller.
 -- The STM32 architecture use memory mapped IO registers to program

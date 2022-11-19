@@ -17,7 +17,7 @@ Description:
             and can also be used to build higher level abstraction.
             See the "App.Blink" module
             and the [github page](https://github.com/MarcFontaine/stm32hs)
-            
+
 Copyright:     2015-2022 Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
 License:       BSD-3-Clause
@@ -29,10 +29,22 @@ Build-Type:    Simple
 Source-Repository head
   type:     git
   location: git://github.com/MarcFontaine/stm32hs
-               
+
+common project-config
+  default-language:     Haskell2010
+
+  ghc-options:          -Wall
+                        -Wcompat
+                        -Wincomplete-record-updates
+                        -Wincomplete-uni-patterns
+                        -Wpartial-fields
+                        -Wredundant-constraints
+                        -Wunused-packages
+                        -Werror
+  
 library
   default-language  : Haskell2010
-  ghc-options       : -Wall
+  ghc-options       : -Werror
   build-depends     : base  >= 4 && < 5
                     , bytestring
                     , transformers
@@ -40,7 +52,7 @@ library
                     , binary
                     , STM32F103xx-SVD <0.2
                     , STLinkUSB <0.2
-		    
+
   hs-source-dirs: src
   exposed-modules:
       STM32.API
@@ -51,13 +63,13 @@ library
     , STM32.USART
     , STM32.RTC
     , STM32.RCC
-    , STM32.PWR            
+    , STM32.PWR
     , STM32.DMA
     , STM32.ADC
     , STM32.SPI
     , STM32.I2C
     , STM32.DAC
-    , STM32.Timer            
+    , STM32.Timer
     , App.Blink
     , App.Serial
     , App.ADC

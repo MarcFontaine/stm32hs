@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.USART
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -22,7 +22,7 @@ import qualified STM32.RCC as RCC
 
 import Control.Monad
 import Data.Word
-       
+
 data Config = Config  {
      _baudRate   :: BaudRate
    , _wordLength :: WordLength
@@ -51,7 +51,7 @@ defaultConfig = Config  {
    , _mode       = RxTx
    , _hardwareFlowControl = None
    }
-   
+
 data WordLength = Eight | Nine deriving Show
 instance ToBit WordLength where
   toBit Eight = False
@@ -65,11 +65,11 @@ instance RegisterField StopBits where
      Two   -> "10"
      One5  -> "11"
   toField = const CR2_STOP
-  
+
 data Parity   = No | Even | Odd deriving Show
 data Mode = Rx | Tx | RxTx deriving Show
 data HardwareFlowControl = None | RTS | CTS | RTS_CTS | NA deriving (Eq,Show)
-data BaudRate = BaudRateRegisterValue {getBRR :: Word16} deriving Show 
+newtype BaudRate = BaudRateRegisterValue {getBRR :: Word16} deriving Show
 
 deInit :: Peripheral -> MI ()
 deInit = RCC.peripheralResetToggle
@@ -77,12 +77,12 @@ deInit = RCC.peripheralResetToggle
 init :: Peripheral -> Config -> MI ()
 init p conf = do
   let write field rs = bitWrite p field rs
-  
+
   fieldWrite p $ _stopBits conf
 
   write CR1_PCE $ case _parity conf of
         No -> False
-        Even -> False        
+        Even -> False
         Odd  -> True
 
   write CR1_PS $ case _parity conf of
@@ -92,7 +92,7 @@ init p conf = do
   write CR1_M $ _wordLength conf
 
   write CR1_TE $ case _mode conf of
-    Tx   -> True 
+    Tx   -> True
     Rx   -> False
     RxTx -> True
 
@@ -120,7 +120,7 @@ enable :: Peripheral -> MI ()
 enable p = bitSet p CR1_UE
 
 disable :: Peripheral -> MI ()
-disable p = bitReset p CR1_UE 
+disable p = bitReset p CR1_UE
 
 data UartPort = UartPort {
    _UartPeripheral  :: Peripheral
@@ -154,7 +154,7 @@ stm32F103_UartPort3 = UartPort {
   }
 
 
-configure :: UartPort -> Config -> MI () 
+configure :: UartPort -> Config -> MI ()
 configure UartPort {..} config = do
   STM32.USART.deInit _UartPeripheral
   RCC.peripheralClockOn _UartPeripheral

@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  App.ADC
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -17,17 +17,15 @@
 module App.ADC
 where
 import Control.Monad
-import Control.Monad.IO.Class       
-       
+import Control.Monad.IO.Class
+
 import STM32.API
 import STM32.DMA as DMA
 import STM32.GPIO as GPIO
 import STM32.ADC as ADC
 
 import qualified Data.ByteString.Lazy as BSL (fromStrict)
-import Data.Binary
 import Data.Binary.Get
-
 
 -- this is buggy the channels get mixed up from time to time
 -- maybe DMA out of sync
@@ -47,7 +45,7 @@ adc3channel = runMI $ do
       bufferSize :: Num x => x
       bufferSize = overSampling * 2 *3
       dmaCount = overSampling *3
-  let dmaBuffer = 0x20001000 
+  let dmaBuffer = 0x20001000
       dmaConfig = DMA.Config {
         _BufferSize         = dmaCount
        ,_Direction          = PeripheralSRC
@@ -95,7 +93,7 @@ adc3channel = runMI $ do
                  ((,,) <$> getWord16le  <*> getWord16le  <*> getWord16le)
                )
                (BSL.fromStrict buffer)
-       average sel = (fromIntegral $ sum $ map sel vals) * 100 `div` overSampling
+       average sel = fromIntegral (sum $ map sel vals) * 100 `div` overSampling
        w1 :: Int
        w1 = average (\(x,_,_) -> x)
        w2 :: Int
@@ -113,7 +111,7 @@ adc3channel = runMI $ do
 
 -- | Periodically sample a block of data and write it to a file.
 -- In combination with a wave-form viewer that can detect file updates,
--- this works as a poor mans' digital storage oscilloscope. 
+-- this works as a poor mans' digital storage oscilloscope.
 sampleBlock :: FilePath -> IO ()
 sampleBlock filename = runMI $ do
   initMI
@@ -127,7 +125,7 @@ sampleBlock filename = runMI $ do
       samples = 1000
       bufferSize :: Num x => x
       bufferSize = samples *2
-  let dmaBuffer = 0x20001000 
+  let dmaBuffer = 0x20001000
       dmaConfig = DMA.Config {
         _BufferSize         = samples
        ,_Direction          = PeripheralSRC
@@ -172,10 +170,8 @@ sampleBlock filename = runMI $ do
   buffer <- readMem8 dmaBuffer bufferSize
   let
     vals :: [(Int,Word16)]
-    vals = zip [0..] $ runGet (replicateM samples $
-               (getWord16le)
-                )
+    vals = zip [0..] $ runGet (replicateM samples getWord16le)
               $ BSL.fromStrict buffer
-    out = concat $ map (\(idx,val) -> (show idx ++"," ++ show val ++ "\n")) vals
+    out = concatMap (\(idx,val) -> show idx ++"," ++ show val ++ "\n") vals
   liftIO $ writeFile filename out
- 
+

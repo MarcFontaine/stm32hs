@@ -1,13 +1,13 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.Timer
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
--- 
+--
 -- Timer
 
 {-# LANGUAGE OverloadedStrings,NoMonomorphismRestriction #-}
@@ -36,7 +36,7 @@ data CounterMode
   | CenterAligned2
   | CenterAligned3
   deriving Show
-  
+
 data ClockDevision = CKD_DIV1 | CKD_DIV2 | CKD_DIV4
   deriving Show
 
@@ -62,11 +62,11 @@ timeBaseInit p conf = do
       CenterAligned2 -> "10"
       CenterAligned3 -> "11"
   regFieldWrite p CR1_CMS mode
- 
+
   bitWrite p CR1_DIR $ case _CounterMode conf of
     Up             -> False
     Down           -> True
-    _              -> True    
+    _              -> True
   pokeReg p ARR $ fromIntegral $ _Period conf
   pokeReg p PSC $ fromIntegral $ _Prescaler conf
   bitSet p EGR_UG -- generate and update-event

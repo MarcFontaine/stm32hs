@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.STLinkUSB.Env
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -17,14 +17,14 @@
 module STM32.STLinkUSB.Env
 where
 
-import System.USB
+import System.USB (Ctx, EndpointAddress, Device, DeviceHandle)
 import Control.Monad.Trans.Reader
 import Control.Monad.IO.Class
 
 import STM32.STLinkUSB.USBUtils
 import STM32.STLinkUSB.Commands (API(..))
 
-type STLT m a = ReaderT STLinkEnv m a       
+type STLT m a = ReaderT STLinkEnv m a
 type STL a = forall m. MonadIO m => ReaderT STLinkEnv m a
 
 runSTLink :: STLT IO a  -> IO a
@@ -47,7 +47,7 @@ runSTLinkWith
      debugLogger
      (usbCtx, device, rxEndpoint, txEndpoint, traceEndpoint)
      action
-  =  withUSB device $ \deviceHandle -> (action STLinkEnv {..})
+  =  withUSB device $ \deviceHandle -> action STLinkEnv {..}
   where
     dongleAPI = APIV2
 
@@ -66,7 +66,7 @@ asksDongleAPI = asks dongleAPI
 
 data LogLevel = Debug | Info | Warn | Error deriving (Show,Eq,Ord)
 type Logger = LogLevel -> String -> IO ()
-  
+
 debugSTL :: LogLevel -> String -> STL ()
 debugSTL ll msg = do
   logger <- asks debugLogger

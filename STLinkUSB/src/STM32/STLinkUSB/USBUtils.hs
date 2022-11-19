@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.STLinkUSB.USBUtils
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -28,20 +28,20 @@ findDefaultEndpoints = do
         [x] -> x
         [] -> error "no STLink dongle found"
         (_:_:_) -> error "more than one STLink dongle found"
-  
+
   findEndpoints ctx device
-  
+
 findUSBDevices ::
   Ctx -> ProductId -> IO [Device]
 findUSBDevices ctx stlProductID = do
-  devices <- fmap Vector.toList $ getDevices ctx
+  devices <- Vector.toList <$> getDevices ctx
   flip filterM devices $ \ device -> do
       descr <- getDeviceDesc device
       return (deviceProductId descr == stlProductID)
 
 defaultSTLProductID :: ProductId
 defaultSTLProductID = 0x3748
-                   
+
 findEndpoints ::
      Ctx -> Device
   -> IO (Ctx, Device, EndpointAddress, EndpointAddress, EndpointAddress)
@@ -60,9 +60,3 @@ withUSB device action
   = withDeviceHandle device $
      \deviceHandle  -> withDetachedKernelDriver deviceHandle 0
                          $ action deviceHandle
-
-usbReadTimeout :: Int
-usbReadTimeout = 1000
-
-usbWriteTimeout :: Int
-usbWriteTimeout = 100

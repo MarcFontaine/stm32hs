@@ -3,7 +3,7 @@
 -- Module      :  STM32.API
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only

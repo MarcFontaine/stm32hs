@@ -3,15 +3,15 @@
 -- Module      :  STM32.DMA
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- 
+--
 -- The direct memory access (DMA)
 -- controller is one of the coolest features of STM32Fxxx
--- micro controllers. 
+-- micro controllers.
 -- For example, one can sample signals at a fast and precise
 -- sampling rate or generate wave-form patterns using DMA transfers.
 -- DMA transfers run completely independent and in parallel
@@ -142,7 +142,7 @@ data Priority
 instance ToBitField Priority where
   toBitField p = case p of
 -}
-          
+
 data DataSize
   = Byte | HalfWord | Word
   deriving Show
@@ -161,20 +161,20 @@ writeCCRxOffset offset channel field rs
   = bitWriteRaw rs
       (regToAddr (channelToPeripheral channel) $ channelToCCR channel )
       (offset + fieldBitOffset field)
-  
+
 init :: Channel -> Config -> MI ()
 init channel config = do
   let
      peri = channelToPeripheral channel
-     writeCCRx  = writeCCRxOffset 0 channel 
+     writeCCRx  = writeCCRxOffset 0 channel
      writeCCRxH = writeCCRxOffset 1 channel
      writeCCRxL = writeCCRx
-  
+
      poke  = pokeReg peri
      cndtr = channelToCNDTR channel
      cpar = channelToCPAR channel
      cmar = channelToCMAR channel
- 
+
   writeCCRx CCR1_DIR $ case _Direction config of
      PeripheralSRC -> False
      Mem2Mem       -> True
@@ -217,7 +217,7 @@ init channel config = do
 
 cmd :: Channel -> Bool -> MI ()
 cmd c rs
-  = writeCCRxOffset 0 c CCR1_EN rs 
+  = writeCCRxOffset 0 c CCR1_EN rs
 
 enable :: Channel -> MI ()
 enable c = cmd c True

@@ -1,13 +1,13 @@
 -- |
 -- Module      :  STM32.STLinkUSB.CortexM
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
--- Starting and stopping the attached CPU
+-- Starting and stopping the attached CPU.
 
 module STM32.STLinkUSB.CortexM
 where
@@ -22,11 +22,11 @@ import STM32.STLinkUSB.Dongle
 import STM32.STLinkUSB.Env
 import STM32.STLinkUSB.USBXfer
 import STM32.STLinkUSB.MemRW
-  
+
 halt :: STL ()
 halt = do
   debugSTL Info "halting CPU"
-  api <- asksDongleAPI              
+  api <- asksDongleAPI
   case api of
      APIV2 -> writeDebugReg _DCB_DHCSR (_DBGKEY .|. _C_HALT .|. _C_DEBUGEN)
      APIV1 -> void $ xfer (DEBUG_COMMAND FORCEDEBUG)
@@ -44,14 +44,14 @@ resetHalt = halt >> reset
 run :: STL ()
 run = do
   debugSTL Info "starting CPU"
-  api <- asksDongleAPI              
+  api <- asksDongleAPI
   case api of
      APIV2 -> writeDebugReg _DCB_DHCSR (_DBGKEY .|. _C_DEBUGEN)
      APIV1 -> void $ xfer (DEBUG_COMMAND RUNCORE)
 
 readCpuID :: STL BS.ByteString
 readCpuID = do
-  debugSTL Info ("trying to read CPU ID")
+  debugSTL Info "trying to read CPU ID"
   cpuID <- readMem32 _CPUID 4
   debugSTL Info ("CPU ID : " ++ (show $ BS.unpack cpuID))
   return cpuID

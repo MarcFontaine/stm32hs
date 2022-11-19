@@ -4,7 +4,7 @@
 -- Module      :  STM32.Commands
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -12,7 +12,7 @@
 -- The bits, bytes and constants of the STLink protocoll.
 -- The constants have been looked up a corresponding driver that is
 -- part of the openocd library.
--- Some parts have been added for completeness (but have not been tested so far). 
+-- Some parts have been added for completeness (but have not been tested so far).
 module STM32.STLinkUSB.Commands
 where
 import qualified Data.ByteString as BS
@@ -21,7 +21,7 @@ import Data.Binary
 import Data.Binary.Put
 import Data.Binary.Get
 import Data.Bits
-       
+
 data Version = Version {
    stlink :: Word16
   ,jtag   :: Word16
@@ -33,13 +33,13 @@ instance Binary Version where
   get = do
     v <- getWord16be
     let
-      stlink = (v `shiftR` 12) .&. 0x0f 
-      jtag   = (v `shiftR` 6)  .&. 0x3f 
+      stlink = (v `shiftR` 12) .&. 0x0f
+      jtag   = (v `shiftR` 6)  .&. 0x3f
       swim   = v .&. 0x3f
     return $ Version {..}
 
 -- | APIV1 is NOT supported ! Todo remove old APIV1 stuff.
--- | todo 
+-- | todo
 data API = APIV1 | APIV2
   deriving (Show,Eq)
 
@@ -140,7 +140,7 @@ data Cmd
 
 data SWIM_Cmd = SWIM_ENTER | SWIM_EXIT
   deriving Show
-  
+
 instance Binary Cmd where
   get = error "no Binary get for debugCMD"
   put cmd = case cmd of
@@ -153,7 +153,7 @@ instance Binary Cmd where
     (SWIM_COMMAND SWIM_EXIT)  -> putWord8 0xF4 >> putWord8 0x01
     GET_CURRENT_MODE          -> putWord8 0xF5
     GET_TARGET_VOLTAGE        -> putWord8 0xF7
-  
+
 cmdToByteString :: Cmd -> BS.ByteString
 cmdToByteString cmd
   = BS.take 16 $ BSL.toStrict $ runPut (put cmd >> padding)

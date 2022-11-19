@@ -2,7 +2,7 @@
 -- |
 -- Module      :  App.LCD
 -- License     :  BSD3
--- 
+--
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
@@ -10,7 +10,7 @@
 -- System.Hardware.Arduino.Parts.LCD in the hArduino package.
 -- The original Author of this code is Levent Erkok.
 -- There have been some minor adaption for STM32.
-
+{- HLINT ignore -}
 {-# LANGUAGE NamedFieldPuns #-}
 module App.LCD(
   -- * LCD types and registration
@@ -35,8 +35,7 @@ module App.LCD(
   , lcdFlash
   )  where
 
-import Control.Concurrent (threadDelay)
-import Control.Concurrent  (MVar,modifyMVar,newMVar)
+import Control.Concurrent  (MVar,threadDelay,modifyMVar,newMVar)
 import Control.Monad       (when)
 import Control.Monad.IO.Class (liftIO)
 import Data.Bits           (testBit, (.|.), (.&.), setBit, clearBit, shiftL, bit)
@@ -52,13 +51,13 @@ debug = liftIO . putStrLn
 delay :: Int -> MI ()
 delay = liftIO . threadDelay
 digitalWrite :: Wire -> Bool -> MI ()
-digitalWrite = GPIO.pinOut             
-             
+digitalWrite = GPIO.pinOut
+
 data LCD = LCD {
       _controller :: LCDController
      ,_state    :: MVar LCDData
      }
-     
+
 -- | Hitachi LCD controller: See: <http://en.wikipedia.org/wiki/Hitachi_HD44780_LCD_controller>.
 -- We model only the 4-bit variant, with RS and EN lines only. (The most common Arduino usage.)
 -- The data sheet can be seen at: <http://lcd-linux.sourceforge.net/pdfdocs/hd44780.pdf>.
@@ -81,7 +80,7 @@ data LCDData = LCDData {
                 , lcdDisplayControl :: Word8         -- ^ Display control (blink on/off, display on/off etc.)
                 , lcdGlyphCount     :: Word8         -- ^ Count of custom created glyphs (typically at most 8)
                 , lcdController     :: LCDController -- ^ Actual controller
-                }       
+                }
 ---------------------------------------------------------------------------------------
 -- Low level interface, not available to the user
 ---------------------------------------------------------------------------------------
@@ -143,7 +142,7 @@ initLCD lcd c@Hitachi44780{lcdRS, lcdEN, lcdD4, lcdD5, lcdD6, lcdD7} = do
 -- | Get the controller associated with the LCD
 getController :: LCD -> MI LCDController
 getController lcd = return $ _controller lcd
-      
+
 -- | Send a command to the LCD controller
 sendCmd :: LCDController -> Cmd -> MI ()
 sendCmd c = transmit False c . getCmdVal c
@@ -267,7 +266,7 @@ lcdSetCursor lcd (givenCol, givenRow) = withLCD lcd ("Sending the cursor to Row:
                     offset = col + fromMaybe 0x54 (row `lookup` rowOffsets)
 
 -- | Scroll the display to the left by 1 character. Project idea: Using a tilt sensor, scroll the contents of the display
--- left/right depending on the tilt. 
+-- left/right depending on the tilt.
 lcdScrollDisplayLeft :: LCD -> MI ()
 lcdScrollDisplayLeft lcd = withLCD lcd "Scrolling display to the left by 1" $ \c -> sendCmd c (LCD_CURSORSHIFT lcdMoveLeft)
   where lcdMoveLeft = 0x00

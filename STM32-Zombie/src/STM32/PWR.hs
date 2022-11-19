@@ -3,7 +3,7 @@
 -- Module      :  STM32.PWR
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -24,7 +24,7 @@ instance RegisterField PVDLevel where
   toBits b = case b of
     U_2V2 -> "000"
     U_2V3 -> "001"
-    U_2V4 -> "010"    
+    U_2V4 -> "010"
     U_2V5 -> "011"
     U_2V6 -> "100"
     U_2V7 -> "101"

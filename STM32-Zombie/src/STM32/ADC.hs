@@ -3,7 +3,7 @@
 -- Module      :  STM32.APP
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -19,7 +19,7 @@ import STM32.Utils
 import Data.Word
 import qualified STM32.RCC as RCC
 import Data.Bits
-       
+
 deInit :: Peripheral -> MI ()
 deInit = RCC.peripheralResetToggle
 
@@ -59,7 +59,7 @@ instance RegisterField Mode where
     SlowInterl              -> "1000"
     AlterTrig               -> "1001"
   toField = const CR1_DUALMOD
-  
+
 data ExternalTrigConv
   = ExternalTrigConv_T1_CC1
   | ExternalTrigConv_T1_CC2
@@ -94,10 +94,10 @@ instance RegisterField ExternalTrigConv where
     ExternalTrigConv_T5_CC1                -> "101"
     ExternalTrigConv_T5_CC3                -> "110"
   toField = const CR2_EXTSEL
-  
+
 data DataAlign = AlignRight | AlignLeft
   deriving Show
-  
+
 instance ToBit DataAlign where
   toBit AlignRight = False
   toBit AlignLeft  = True
@@ -148,7 +148,7 @@ data ExternalTrigInjecConv
   deriving Show
 
 instance ToBitField ExternalTrigInjecConv where
-  toBitField e = case e of  
+  toBitField e = case e of
     ExternalTrigInjecConv_T1_TRGO           -> "000"
     ExternalTrigInjecConv_T1_CC4            -> "001"
     ExternalTrigInjecConv_T2_TRGO           -> "010"
@@ -188,7 +188,7 @@ init p conf = do
   bitWrite p CR2_ALIGN $ _DataAlign conf
   fieldWrite p  $ _ExternalTrigConv conf
   bitWrite p CR2_CONT $ _ContinuousConvMode conf
-  
+
   pokeReg p SQR1 ((_NbrOfChannel conf -1) `shiftL` 20)
 
 channelToSMP :: Channel -> Field
@@ -252,7 +252,7 @@ rankToSQ r = case r of
   15 -> SQR1_SQ15
   16 -> SQR1_SQ16
   _ -> error "ADC.hs rankToSQ"
-  
+
 regularChannelConfig :: Peripheral -> Channel -> Word8 -> SampleTime -> MI ()
 regularChannelConfig p channel rank sampleTime = do
   regFieldWrite p (channelToSMP channel) sampleTime
@@ -264,10 +264,10 @@ dmaCmd p rs = case p of
   ADC2 -> error "dmaCMD: ADC2 no DMA available"
   ADC3 -> bitWrite ADC3 CR2_DMA rs
   _    -> error "dmaCMD"
-  
+
 cmd :: Peripheral -> Bool -> MI ()
 cmd p rs = bitWrite p CR2_ADON rs
-  
+
 softwareStartConvCmd :: Peripheral -> Bool -> MI ()
 softwareStartConvCmd p rs = do
   bitWrite p CR2_EXTTRIG rs

@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.GPIO
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -23,11 +23,11 @@ data Pin
   deriving (Show,Ord,Eq,Enum)
 
 type Wire = (Peripheral,Pin)
-  
+
 pinOut :: Wire -> Bool -> MI ()
-pinOut (p,pin) rs = case rs of
-   True  -> bitSet p $ bsFromPin pin
-   False -> bitSet p $ brFromPin pin
+pinOut (p,pin) rs = if rs
+  then bitSet p $ bsFromPin pin
+  else bitSet p $ brFromPin pin
 
 pinHigh :: Wire -> MI ()
 pinHigh w = pinOut w True
@@ -46,7 +46,7 @@ instance ToBitField Speed where
     MHz_10 -> "01"
     MHz_2  -> "10"
     MHz_50 -> "11"
-        
+
 data PinMode
   = GPOutPushPull Speed
   | GPOutOpenDrain Speed
@@ -77,13 +77,13 @@ pinMode (p,n) m = do
     AlternateOutOpenDrain s -> toBitField s
     InputAnalog             -> "00"
     InputFloating           -> "00"
-    InputPullDown           -> "00" 
-    InputPullUp             -> "00" 
+    InputPullDown           -> "00"
+    InputPullUp             -> "00"
   case m of
     InputPullDown -> pinLow (p,n)
     InputPullUp   -> pinHigh (p,n)
     _ -> return ()
-  
+
 cnfFromPin :: Pin -> Field
 cnfFromPin p = cnf
   where
@@ -106,7 +106,7 @@ brFromPin p = br
 
 pinToFields :: Pin -> (Field,Field,Field,Field)
 pinToFields p = case p of
-  Pin_0 ->  ( CRL_CNF0 ,  CRL_MODE0 , BSRR_BS0 , BSRR_BR0  ) 
+  Pin_0 ->  ( CRL_CNF0 ,  CRL_MODE0 , BSRR_BS0 , BSRR_BR0  )
   Pin_1 ->  ( CRL_CNF1 ,  CRL_MODE1 , BSRR_BS1 , BSRR_BR1  )
   Pin_2 ->  ( CRL_CNF2 ,  CRL_MODE2 , BSRR_BS2 , BSRR_BR2  )
   Pin_3 ->  ( CRL_CNF3 ,  CRL_MODE3 , BSRR_BS3 , BSRR_BR3  )

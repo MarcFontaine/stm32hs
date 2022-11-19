@@ -3,7 +3,7 @@
 -- Module      :  App.Blink
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -19,7 +19,7 @@ import STM32.GPIO as GPIO
 
 blink :: IO ()
 blink = runMI $ blinkLED (GPIOC,Pin_13)
-      
+
 blinkLED :: Wire -> MI ()
 blinkLED led = do
   initMI

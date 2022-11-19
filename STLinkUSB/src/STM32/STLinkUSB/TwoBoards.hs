@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.STLinkUSB.TwoBoards
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -39,10 +39,10 @@ runSTLinkAB_verbose
     . runReaderT
 
 runSTLinkAB' ::
-     (Logger,Logger)
-  -> ((STLinkEnv,STLinkEnv) -> IO a)
+     (Logger, Logger)
+  -> ((STLinkEnv, STLinkEnv) -> IO a)
   -> IO a
-runSTLinkAB' (loggerA,loggerB) action = do
+runSTLinkAB' (loggerA, loggerB) action = do
   ctx <- newCtx
   setDebug ctx PrintWarnings
   list <- findUSBDevices ctx defaultSTLProductID
@@ -53,7 +53,7 @@ runSTLinkAB' (loggerA,loggerB) action = do
           (_:_:_:_) -> error "more two one STLink dongle found"
   (_,_,rxA,txA,traceA) <- findEndpoints ctx deviceA
   (_,_,rxB,txB,traceB) <- findEndpoints ctx deviceB
-  let 
+  let
      preEnvA handleA = STLinkEnv {
        usbCtx      = ctx
       ,rxEndpoint  = rxA
@@ -72,35 +72,34 @@ runSTLinkAB' (loggerA,loggerB) action = do
       ,dongleAPI     = APIV2
       ,debugLogger   = taggedLogger "B" loggerB
       }
-  runSTLinkWithAB (deviceA,deviceB) (preEnvA,preEnvB) action
+  runSTLinkWithAB (deviceA, deviceB) (preEnvA, preEnvB) action
 
 runSTLinkWithAB ::
       (Device, Device)
-   -> ((DeviceHandle -> STLinkEnv), (DeviceHandle -> STLinkEnv))
+   -> (DeviceHandle -> STLinkEnv, DeviceHandle -> STLinkEnv)
    -> ((STLinkEnv, STLinkEnv) -> IO a)
    -> IO a
 runSTLinkWithAB (deviceA, deviceB) (preEnvA, preEnvB) action
   =  withUSB deviceA $ \deviceHandleA ->
       withUSB deviceB $ \deviceHandleB ->
-        (action (preEnvA deviceHandleA, preEnvB deviceHandleB))
+        action (preEnvA deviceHandleA, preEnvB deviceHandleB)
 
 taggedLogger :: String -> Logger -> Logger
 taggedLogger tag logger loglevel msg
   = logger loglevel (tag++":"++msg)
 
-
 boardA :: STLT IO a  -> STLTT IO a
 boardA action = do
   env <- asks fst
-  liftIO $ (runReaderT action) env
+  liftIO $ runReaderT action env
 
 boardB :: STLT IO a  -> STLTT IO a
 boardB action = do
   env <- asks snd
-  liftIO $ (runReaderT action) env
+  liftIO $ runReaderT action env
 
 testTwoBoards :: IO ()
 testTwoBoards = runSTLinkAB_verbose $ do
-  boardA $ initDongle
-  _<-boardA $ readCpuID
-  boardB $ initDongle
+  boardA initDongle
+  _ <- boardA readCpuID
+  boardB initDongle

@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.Utils
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -20,11 +20,11 @@ import Data.String
 import Control.Monad
 import Control.Monad.IO.Class
 import Control.Concurrent (threadDelay)
-import Device       
+import Device
 
 delay :: Int -> MI ()
 delay = liftIO . threadDelay
-       
+
 regToAddr :: Peripheral -> Register -> Word32
 regToAddr p r = peripheralBase p + registerOffset p r
 
@@ -60,8 +60,8 @@ pokeLHReg p (l,h) val = do
 
 
 fromLH :: Word32 -> Word32 -> Word32
-fromLH l h = (h `shiftL` 16) .|. (l .&. 0xffff) 
-  
+fromLH l h = (h `shiftL` 16) .|. (l .&. 0xffff)
+
 print':: Show x => x -> MI ()
 print' = liftIO . print
 
@@ -75,7 +75,7 @@ class ToBit a where
   toBit :: a -> Bool
 
 instance ToBit Bool where toBit = id
-         
+
 bitWrite :: ToBit b => Peripheral -> Field -> b -> MI ()
 bitWrite p f rs = do
   when (fieldBitWidth f /= 1) $ error "bitSet: fieldWidth not 1"
@@ -86,10 +86,10 @@ bitWrite p f rs = do
 class RegisterField f where
   toBits :: f -> BitField
   toField :: f -> Field
-  
+
 class ToBitField f where
   toBitField :: f -> BitField
-  
+
 instance ToBitField [Bool] where toBitField = BitField
 instance ToBitField BitField where toBitField = id
 newtype BitField = BitField {unBitField :: [Bool]}
@@ -102,8 +102,8 @@ toBList = reverse . map toB
   where
     toB '0' = False
     toB '1' = True
-    toB _ = error "toBList: no binary"  
-                  
+    toB _ = error "toBList: no binary"
+
 fieldWrite :: RegisterField f => Peripheral -> f -> MI ()
 fieldWrite p regField
   = regFieldWrite p (toField regField) (toBits regField)
@@ -114,41 +114,41 @@ regFieldWrite p f bits' = do
   when (fieldBitWidth f /=  length bits)
      $ error "fieldWrite: fieldWidth does not match argument"
   fieldWriteRaw
-    (fieldToAddr p f) 
+    (fieldToAddr p f)
     (enumFrom $ fieldBitOffset f)
     bits
-  
+
 fieldWriteRaw :: Word32 -> [Int] -> [Bool] -> MI ()
-fieldWriteRaw addr offsets bits              
-  = zipWithM_ (\o b -> bitWriteRaw b addr o) offsets bits 
+fieldWriteRaw addr offsets bits
+  = zipWithM_ (\o b -> bitWriteRaw b addr o) offsets bits
 
 bitWriteRaw :: ToBit b => b -> Word32 -> Int -> MI ()
 bitWriteRaw rs addr bitNum = do
   bbAddr <- case toBidBand addr bitNum of
                 Just r -> return r
                 Nothing -> error "todo: bitWrite implement none bitband"
-  case toBit rs of
-    True -> poke_w32 bbAddr 1
-    False -> poke_w32 bbAddr 0
+  if toBit rs
+    then poke_w32 bbAddr 1
+    else poke_w32 bbAddr 0
 
 bitWrite_alt :: Bool -> Peripheral -> Field -> MI ()
 bitWrite_alt rs p f = do
   let
     r = fieldToRegister f
-    bitNum = fieldBitOffset f 
+    bitNum = fieldBitOffset f
   old <- peekReg p r
-  let new = case rs of
-          True -> old .|. (1 `shiftL` bitNum)
-          False -> old .&.(0xfffffffe `shiftL` bitNum)
+  let new = if rs
+          then old .|. (1 `shiftL` bitNum)
+          else old .&.(0xfffffffe `shiftL` bitNum)
   pokeReg p r new
 
-  
+
 toBidBand :: Word32 -> Int -> Maybe Word32
 toBidBand addr bitNum = case addr of
     _ | 0x20000000 <= addr && addr <= 0x200FFFFF
-        -> Just $ (bit_word_offset $ addr - 0x20000000) + 0x22000000
+        -> Just $ bit_word_offset (addr - 0x20000000) + 0x22000000
     _ | 0x40000000 <= addr && addr <= 0x400FFFFF
-        -> Just $ (bit_word_offset $ addr - 0x40000000) + 0x42000000
+        -> Just $ bit_word_offset (addr - 0x40000000) + 0x42000000
     _ -> Nothing
    where
-     bit_word_offset byte = byte*32 + (fromIntegral bitNum) * 4
+     bit_word_offset byte = byte*32 + fromIntegral bitNum * 4

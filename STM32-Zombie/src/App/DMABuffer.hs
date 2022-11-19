@@ -3,7 +3,7 @@
 -- Module      :  App.DMABuffer
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -15,8 +15,8 @@
 module App.DMABuffer
 where
 import Control.Monad
-import Control.Monad.IO.Class       
-       
+import Control.Monad.IO.Class
+
 import STM32.API
 import qualified STM32.USART as USART
 import STM32.DMA as DMA
@@ -49,7 +49,7 @@ readCommDMA = runMI $ do
   USART.init USART1 USART.defaultConfig
   bitSet USART1 CR1_RE
 
-  let dmaBuffer = 0x20001000 
+  let dmaBuffer = 0x20001000
       dmaConfig = DMA.Config {
         _BufferSize         = 16
        ,_Direction          = PeripheralSRC
@@ -101,13 +101,13 @@ uartRingBuffer = runMI $ do
   USART.enable USART1
   USART.init USART1 USART.defaultConfig
   bitSet USART1 CR1_RE
-  
+
   let
       entries :: Num a => a
       entries = 20
       bufferSize :: Num a => a
       bufferSize = 2 * entries
-  let dmaBuffer = 0x20001000 
+  let dmaBuffer = 0x20001000
       dmaConfig = DMA.Config {
         _BufferSize         = entries
        ,_Direction          = PeripheralSRC

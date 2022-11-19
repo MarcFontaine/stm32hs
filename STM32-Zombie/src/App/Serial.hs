@@ -3,13 +3,13 @@
 -- Module      :  App.Serial
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
 -- Serial port output.
--- 
+--
 
 module App.Serial
 where
@@ -19,7 +19,7 @@ import STM32.API
 import qualified STM32.USART as USART
 import STM32.DMA as DMA
 
-import Data.ByteString.Char8 as BS (pack)       
+import Data.ByteString.Char8 as BS (pack)
 
 -- | Send some chars one after the other
 sendComm :: IO ()
@@ -49,7 +49,7 @@ sendCommDMA_Port port config = do
   setDefaultClocks
   USART.configure port config
 
-  let dmaBuffer = 0x20001000 
+  let dmaBuffer = 0x20001000
       dmaConfig = DMA.Config {
         _BufferSize         = 16
        ,_Direction          = PeripheralDST
@@ -67,7 +67,7 @@ sendCommDMA_Port port config = do
   bitSet USART1 CR3_DMAT
   DMA.deInit DMA1_Channel4
   writeMem8 dmaBuffer $ BS.pack "abcdefghABCD123\n"
-  
+
   forever $ do
      DMA.disable DMA1_Channel4
      DMA.init DMA1_Channel4 dmaConfig

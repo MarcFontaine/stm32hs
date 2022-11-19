@@ -3,7 +3,7 @@
 -- Module      :  App.Stepper
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -11,7 +11,7 @@
 -- Stepper motor control. (GPIO bit-banging)
 -- This example uses bit-banging to toggle two GPIO pins.
 -- It does not show a special STM32 feature.
--- (But I just wanted to test a stepper motor) 
+-- (But I just wanted to test a stepper motor)
 
 module App.Stepper
 where

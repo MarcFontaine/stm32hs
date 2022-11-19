@@ -2,7 +2,7 @@
 -- |
 -- Module      :  App.RealTimeClock
 -- License     :  BSD3
--- 
+--
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
@@ -16,8 +16,8 @@ where
 import STM32.API
 import qualified STM32.RTC as RTC
 
-printRTC :: IO ()       
+printRTC :: IO ()
 printRTC = runMI $ do
   initMI
-  resetHalt  
+  resetHalt
   RTC.getCounter >>=print'

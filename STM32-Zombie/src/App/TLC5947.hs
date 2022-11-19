@@ -3,7 +3,7 @@
 -- Module      :  App.TLC5947
 -- Copyright   :  (c) Marc Fontaine 2019
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only

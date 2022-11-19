@@ -1,13 +1,13 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.SPI
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
--- 
+--
 -- The SPI peripheral.
 
 {-# LANGUAGE OverloadedStrings #-}
@@ -19,7 +19,6 @@ import STM32.MachineInterface
 import STM32.Utils
 import qualified STM32.RCC as RCC
 
-import Control.Monad
 import Data.Word
 
 data Config = Config {
@@ -102,7 +101,7 @@ init p conf = do
   write CR1_DFF $ case _dataSize conf of
         Eight   -> False
         Sixteen -> True
-  
+
   write CR1_CPOL $ case _CPOL conf of
         Low  -> False
         High -> True
@@ -128,7 +127,7 @@ enable p = bitSet p CR1_SPE
 
 disable :: Peripheral -> MI ()
 disable p = bitReset p CR1_SPE
-  
+
 sendData8 :: Peripheral -> Word8 -> MI ()
 sendData8 p b = pokeReg p DR $ fromIntegral b
 
@@ -136,10 +135,10 @@ sendData :: Peripheral -> Word16 -> MI ()
 sendData p b = pokeReg p DR $ fromIntegral b
 
 receiveData8 :: Peripheral -> MI Word8
-receiveData8 p = fmap fromIntegral $ peekReg p DR
+receiveData8 p = fromIntegral <$> peekReg p DR
 
 receiveData :: Peripheral -> MI Word16
-receiveData p = fmap fromIntegral $ peekReg p DR
+receiveData p = fromIntegral <$> peekReg p DR
 
 ssOutputCmd :: Peripheral -> Bool -> MI ()
 ssOutputCmd p = bitWrite p CR2_SSOE

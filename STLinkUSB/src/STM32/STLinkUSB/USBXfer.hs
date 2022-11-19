@@ -1,70 +1,87 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.STLinkUSB.USBXfer
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
 -- This module contains low-level functions for USB data transfers.
 -- Don't use theses functions directly, the prefered API is the MemRW module.
 
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE RankNTypes #-}
 module STM32.STLinkUSB.USBXfer
+(
+    Status (..)
+  , xfer
+  , xferBulkWrite
+  , xferRetry
+  , xferReadTrace
+  , xferStatus
+)
 where
 
-import System.USB
 import Control.Monad.Trans.Reader
 import Control.Monad.IO.Class
 import Control.Concurrent (threadDelay)
-import Control.Exception (catch)
+import Control.Exception (SomeException(..), catch)
 
 import qualified Data.ByteString as BS
 
-import STM32.STLinkUSB.Commands
+import qualified System.USB as USB (Status(..), USBException(..), readBulk, writeBulk)
+
+import STM32.STLinkUSB.Commands hiding (Status)
 import STM32.STLinkUSB.Env
-import STM32.STLinkUSB.USBUtils
+import STM32.STLinkUSB.USB
 
-data XferStatus
-  = XferOK
-  | XferRetry
-  | XferDongleError
-  | XferUSBError (Either USBException System.USB.Status)
-  deriving (Show,Eq)
+usbReadTimeout :: Int
+usbReadTimeout = 1000
 
-writeBulkSTL :: Cmd -> STL (Size, System.USB.Status)
-writeBulkSTL cmd
-  = ReaderT $ \STLinkEnv {..} -> liftIO 
-    $ writeBulk deviceHandle txEndpoint (cmdToByteString cmd) usbWriteTimeout
+usbWriteTimeout :: Int
+usbWriteTimeout = 100
 
-readBulkSTL :: STL (BS.ByteString, Either USBException System.USB.Status)
+fromUSBStatus :: USB.Status -> Status
+fromUSBStatus = \case
+  USB.Completed -> Completed
+  USB.TimedOut  -> TimedOut
+
+writeCMD :: Cmd -> STL (Size, Status)
+writeCMD cmd
+  = ReaderT $ \STLinkEnv {..} -> liftIO $ do
+    (size, status) <- USB.writeBulk deviceHandle txEndpoint (cmdToByteString cmd) usbWriteTimeout
+    return (size, fromUSBStatus status)
+
+readBulkSTL :: STL (BS.ByteString, Either USBException Status)
 readBulkSTL = ReaderT $ \STLinkEnv {..} -> do
   let readAction = do
-        (r,s) <- readBulk deviceHandle rxEndpoint 64 usbReadTimeout
-        return (r,Right s)
+        (r, s) <- USB.readBulk deviceHandle rxEndpoint 64 usbReadTimeout
+        return (r, Right $ fromUSBStatus s)
   liftIO $ catch readAction handler
   where
-    handler e = return  (BS.empty,Left e)
+    handler :: USB.USBException -> IO (BS.ByteString, Either USBException Status)
+    handler e = return  (BS.empty, Left $ SomeException e)
 
-xferStatus :: Cmd -> STL (BS.ByteString, Either USBException System.USB.Status)
+xferStatus :: Cmd -> STL (BS.ByteString, Either USBException Status)
 xferStatus cmd = do
-  debugSTL Debug $ show ("xferStatus write :",cmd)
-  writeResult <- writeBulkSTL cmd
-  debugSTL Debug $ show ("xferStatus writeResult :",cmd,writeResult)
+  debugSTL Debug $ show ("xferStatus write :", cmd)
+  writeResult <- writeCMD cmd
+  debugSTL Debug $ show ("xferStatus writeResult :", cmd, writeResult)
   (retMsg,retStatus) <- readBulkSTL
-  debugSTL Debug $ show ("xferStatus readResult : ",retStatus,BS.unpack retMsg)
-  return (retMsg,retStatus)
+  debugSTL Debug $ show ("xferStatus readResult : ", retStatus, BS.unpack retMsg)
+  return (retMsg, retStatus)
 
 xferBulkWrite :: Cmd -> BS.ByteString -> STL ()
 xferBulkWrite cmd block = do
-  writeResult1 <- writeBulkSTL cmd
-  debugSTL Debug $ show ("xferBulkWrite : ",cmd,writeResult1)
+  writeResult1 <- writeCMD cmd
+  debugSTL Debug $ show ("xferBulkWrite : ", cmd, writeResult1)
   writeResult2 <- ReaderT $ \STLinkEnv {..} -> do
-      liftIO $ writeBulk deviceHandle txEndpoint block usbWriteTimeout
-  debugSTL Debug $ show ("xferBulkWrite result : ",writeResult2)
-  
+      liftIO $ USB.writeBulk deviceHandle txEndpoint block usbWriteTimeout
+  debugSTL Debug $ show ("xferBulkWrite result : ", writeResult2)
+
 xfer :: Cmd -> STL BS.ByteString
 xfer cmd = do
   (ret,err) <- xferStatus cmd
@@ -88,7 +105,7 @@ xferRetry cmd = loop 8 10000
     exit x = do
        debugSTL Error (show x)
        error $ show x
-       
+
     loop :: Int -> Int -> STL BS.ByteString
     loop 0 _ = exit ("xferRetry giving up after retry:", cmd)
     loop n d = do
@@ -106,10 +123,10 @@ xferRetry cmd = loop 8 10000
            debugSTL Warn ("xferRetry retry after delay ("++ show cmd ++")")
            liftIO $ threadDelay d
            loop (n-1) (d*2)
-           
-xferReadTrace :: STL (BS.ByteString, Either USBException System.USB.Status)
+
+xferReadTrace :: STL (BS.ByteString, Either USBException Status)
 xferReadTrace = do
   debugSTL Debug $ show "xferReadTrace"
-  (retMsg,retStatus) <- readBulkSTL
-  debugSTL Debug $ show ("xferReadTrace return : ",retStatus,BS.unpack retMsg)
-  return (retMsg,retStatus)
+  (retMsg, retStatus) <- readBulkSTL
+  debugSTL Debug $ show ("xferReadTrace return : ", retStatus, BS.unpack retMsg)
+  return (retMsg, retStatus)

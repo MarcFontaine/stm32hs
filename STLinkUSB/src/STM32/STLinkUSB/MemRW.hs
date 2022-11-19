@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.STLinkUSB.MemRW
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -24,13 +24,13 @@ import STM32.STLinkUSB.USBXfer
 
 checkRWStatus :: STL ()
 checkRWStatus = do
-  api <- asks dongleAPI              
+  api <- asks dongleAPI
   case api of
     APIV1 -> return ()
     APIV2 -> do
       msg <- xfer (DEBUG_COMMAND GETLASTRWSTATUS)
       let dongleStatus = toStatus $ BS.head msg
-      if (dongleStatus == DEBUG_ERR_OK)
+      if dongleStatus == DEBUG_ERR_OK
          then return ()
          else do
            let err = show ("checkRWStatus", dongleStatus)
@@ -50,7 +50,7 @@ unsafeToTransferBlock bs
        else error msg
   where
     msg = "unsafeToTransferBlock :" ++ show len ++ "> maxTransferBlockSize"
-    len = BS.length bs                   
+    len = BS.length bs
 
 newtype TransferLen = TransferLen {_unTransferLen :: Word16} deriving Show
 
@@ -61,7 +61,7 @@ unsafeToTransferLen len
        else error msg
   where
     msg = "unsafeToTransferLen :" ++ show len ++ "> maxTransferBlocksize"
-  
+
 writeMem8' :: Addr -> TransferBlock -> STL ()
 writeMem8' addr (TransferBlock block) = do
   void $ xferBulkWrite (DEBUG_COMMAND $ WRITEMEM_8BIT addr len) block
@@ -75,13 +75,13 @@ writeMem32' addr (TransferBlock block) = do
   checkRWStatus
   where
     len = fromIntegral $ BS.length block
-  
+
 readMem8' :: Addr -> TransferLen -> STL BS.ByteString
 readMem8' addr (TransferLen len) = do
   bs <- xfer (DEBUG_COMMAND $ READMEM_8BIT addr len)
   checkRWStatus
   return bs
-      
+
 readMem32' :: Addr -> TransferLen -> STL BS.ByteString
 readMem32' addr (TransferLen len) = do
   bs <- xfer (DEBUG_COMMAND $ READMEM_32BIT addr len)
@@ -104,8 +104,8 @@ chunkBS :: Addr -> BS.ByteString -> [(Addr,TransferBlock)]
 chunkBS addr bs
   = if BS.length bs <= chunkSize
        then [h]
-       else h : (chunkBS (addr + fromIntegral chunkSize)     
-                      (BS.drop chunkSize bs))
+       else h : chunkBS (addr + fromIntegral chunkSize)
+                        (BS.drop chunkSize bs)
    where
     h = (addr, unsafeToTransferBlock $ BS.take chunkSize bs)
     chunkSize = fromIntegral maxTransferBlocksize
@@ -125,7 +125,7 @@ readChunks
   :: (Addr -> TransferLen -> STL BS.ByteString )
       -> Addr -> Int -> STL BS.ByteString
 readChunks action addr len
-  = liftM BS.concat $ forM (chunkAddr addr len) $ uncurry action
+  =  BS.concat <$> forM (chunkAddr addr len) (uncurry action)
 
 readMem8 :: Addr -> Int -> STL BS.ByteString
 readMem8 = readChunks readMem8'

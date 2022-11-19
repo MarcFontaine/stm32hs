@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.STLinkUSB.Dongle
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -13,6 +13,7 @@
 {-# LANGUAGE RankNTypes #-}
 module STM32.STLinkUSB.Dongle
 where
+
 import Control.Monad
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as BSL (fromStrict)
@@ -20,7 +21,6 @@ import Data.Binary
 import Data.Binary.Get
 import Control.Monad.Trans.Reader
 import Control.Monad.IO.Class
-import System.USB (Status(..))
 
 import STM32.STLinkUSB.Commands
 import STM32.STLinkUSB.Env
@@ -48,10 +48,9 @@ initDongle = do
   modeEnter MODE_DEBUG_SWD
   newMode <- readCurrentMode
   when (newMode /= DEV_DEBUG_MODE) $ do
-    let err = ("cannot set dongle mode DEV_DEBUG_MODE. Mode is : "++ show newMode)
-    debugSTL Error err                    
+    let err = "cannot set dongle mode DEV_DEBUG_MODE. Mode is : " ++ show newMode
+    debugSTL Error err
     error err
-  return ()
 
 reset :: STL ()
 reset = do
@@ -64,14 +63,14 @@ readVersion = do
   debugSTL Debug "reading dongle version"
   msg <- xfer GET_VERSION
   return $ decode $ BSL.fromStrict msg
-  
+
 readVoltage :: STL Float
 readVoltage = do
   debugSTL Debug "reading dongle voltage"
   msg <- xfer GET_TARGET_VOLTAGE
   let    (a,b) = runGet ((,) <$> getWord32le <*> getWord32le) $ BSL.fromStrict msg
   return $
-    2.4 * (realToFrac b) / (realToFrac a)
+    2.4 * realToFrac b / realToFrac a
 
 readCurrentMode :: STL DevMode
 readCurrentMode = do
@@ -88,7 +87,7 @@ data Mode
   | MODE_DEBUG_SWD
   | MODE_DEBUG_SWIM
   deriving (Show,Eq,Ord,Enum)
-  
+
 modeEnter :: Mode ->STL ()
 modeEnter mode = do
   api <- asks dongleAPI
@@ -105,7 +104,7 @@ modeLeave mode = do
     MODE_DEBUG_JTAG -> xferCheck $ DEBUG_COMMAND EXIT
     MODE_DEBUG_SWD  -> xferCheck $ DEBUG_COMMAND EXIT
     MODE_DEBUG_SWIM -> xferCheck $ SWIM_COMMAND SWIM_EXIT
-    MODE_DFU        -> xferCheck $ DFU_COMMAND_EXIT
+    MODE_DFU        -> xferCheck DFU_COMMAND_EXIT
     _ -> return ()
   where
       xferCheck cmd = do
@@ -117,7 +116,7 @@ modeLeave mode = do
              let msg = "leaveMode : USB exception : " ++ show usbExcept
              debugSTL Error msg
              error msg
-             
+
 writeDebugReg :: Word32 -> Word32 -> STL()
 writeDebugReg addr val = do
   api <- asks dongleAPI

@@ -9,11 +9,11 @@ import qualified Data.Text as Text
 import Data.Text (Text)
 import qualified Text.XML.Lens as TXL
 import Text.XML(readFile,def)
-import Text.PrettyPrint      
+import Text.PrettyPrint
 import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-       
+
 selectPeripheral ::
   Applicative f => (Element -> f Element) -> Document -> f Document
 
@@ -24,7 +24,7 @@ selectPeripheral = root
 
 selectPeripheralName :: Applicative f => Over (->) f Document Document Text Text
 selectPeripheralName = selectPeripheral ./ el "name" . TXL.text
-                 
+
 selectRegister :: Applicative f => Over (->) f Document Document Element Element
 selectRegister = selectPeripheral ./ el "registers" ./ el "register"
 
@@ -39,7 +39,7 @@ selectFieldName = selectField ./ el "name" . TXL.text
 
 svdFile :: FilePath
 svdFile ="STM32F103xx.svd"
-                
+
 main :: IO ()
 main = do
   svd <- Text.XML.readFile def svdFile
@@ -48,13 +48,13 @@ main = do
 svd2hs :: Document -> String
 svd2hs svd = render hsModule
   where
-     fieldTable =  (Map.fromList
+     fieldTable = Map.fromList
            $ map (\(register,field,offset,width)
                   -> ((register,field),(offset,width)))
            $ concat
            $ svd ^.. selectRegister
-           . to collectFields)     
-  
+           . to collectFields
+
      hsModule = vcat [
         text "-- Generated from"<+> text svdFile
        ,text "module Device"
@@ -77,7 +77,7 @@ svd2hs svd = render hsModule
           (Set.fromList
            $ map (\(r,f) -> Text.concat [r,"_",f])
            $ Map.keys fieldTable)
-  
+
        ,blankLine
 
        ,text "peripheralBase :: Peripheral -> Word32"
@@ -85,7 +85,7 @@ svd2hs svd = render hsModule
           "peripheralBase"
           (svd ^.. selectPeripheral . to foldBaseAddress)
        ,blankLine
-  
+
        ,text "registerOffset :: Peripheral -> Register -> Word32"
        ,funTable
           "registerOffset"
@@ -105,7 +105,7 @@ svd2hs svd = render hsModule
                  -> (textText $ Text.concat [reg , "_" , field],textText reg))
            $ Map.keys fieldTable)
        ,blankLine
-  
+
        ,text "fieldBitOffset :: Field -> Int"
        ,funTable
            "fieldBitOffset"
@@ -113,7 +113,7 @@ svd2hs svd = render hsModule
                  -> (textText $ Text.concat [reg , "_" , field],textText offset))
            $ Map.assocs fieldTable)
        ,blankLine
-  
+
        ,text "fieldBitWidth :: Field -> Int"
        ,funTable
            "fieldBitWidth"
@@ -126,7 +126,7 @@ svd2hs svd = render hsModule
 blankLine :: Doc
 blankLine = text ""
 
-foldBaseAddress :: Element -> (Doc, Doc)          
+foldBaseAddress :: Element -> (Doc, Doc)
 foldBaseAddress x
   = (sel "peripheral" "name" x, sel "peripheral" "baseAddress" x)
 
@@ -134,11 +134,11 @@ derivedPeripheral :: Element -> (Doc,Doc)
 derivedPeripheral p
   = (sel "peripheral" "name" p <+> text "reg"
     ,text "registerOffset"
-     <+> (head $ p ^.. el "peripheral" . attr "derivedFrom" . to textText)
+     <+> head ( p ^.. el "peripheral" . attr "derivedFrom" . to textText)
      <+> text "reg"
     )
-    
-  
+
+
 foldRegisterOffset :: Element -> [(Doc, Doc)]
 foldRegisterOffset p
   = p ^.. el "peripheral" ./ el "registers" ./ el "register" . to fo
@@ -164,22 +164,22 @@ collectFields r
           ,selText "field" "name" x
           ,selText "field" "bitOffset" x
           ,selText "field" "bitWidth" x)
-  
+
 
 textText :: Data.Text.Text -> Doc
 textText = text . Text.unpack
-  
+
 dataType :: String -> Set Text -> Doc
 dataType typeName constructors = vcat [
     text "data" <+> text typeName
-   ,nest 4 $ vcat $ zipWith (<>) seps $ map textText $ Set.toList $ constructors
+   ,nest 4 $ vcat $ zipWith (<>) seps $ map textText $ Set.toList constructors
    ,nest 4 $ text "deriving (Show,Eq,Ord)"
    ]
    where
-     seps = text "=" : (repeat $ text "|")
+     seps = text "=" : repeat (text "|")
 
 funTable :: String -> [(Doc,Doc)] -> Doc
-funTable funName assocs 
+funTable funName assocs
     = vcat $ map mkCase assocs
   where
     mkCase (patterns, value) = hsep [

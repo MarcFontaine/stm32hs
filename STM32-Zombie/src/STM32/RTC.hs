@@ -3,7 +3,7 @@
 -- Module      :  STM32.RTC
 -- Copyright   :  (c) Marc Fontaine 2017
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -36,7 +36,7 @@ inConfigMode action = do
   r <- action
   exitConfigMode
   return r
-          
+
 setCounter :: Word32 -> MI ()
 setCounter n = inConfigMode $ pokeLHReg RTC (CNTL,CNTH) n
 

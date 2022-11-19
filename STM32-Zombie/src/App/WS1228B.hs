@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  App.WS1228B
--- Copyright   :  (c) Marc Fontaine 2017
+-- Copyright   :  (c) Marc Fontaine 2017-2022
 -- License     :  BSD3
--- 
+--
 -- Maintainer  :  Marc.Fontaine@gmx.de
 -- Stability   :  experimental
 -- Portability :  GHC-only
@@ -28,7 +28,7 @@ import STM32.DMA as DMA
 import qualified Data.ByteString as BS
 -- import Control.Monad
 import Data.List (tails)
-  
+
 data RGB = RGB Word8 Word8 Word8
   deriving (Read,Show,Eq,Ord)
 
@@ -97,14 +97,14 @@ spi_nss :: Wire
 spi_nss =(GPIOB,Pin_12)
 spi_sck :: Wire
 spi_sck =(GPIOB,Pin_13)
-spi_miso :: Wire       
+spi_miso :: Wire
 spi_miso=(GPIOB,Pin_14)
 -}
 led :: Wire
 --led = (GPIOC,Pin_13)
 led = (GPIOA,Pin_12)
 
-spi_mosi :: Wire       
+spi_mosi :: Wire
 spi_mosi=(GPIOB,Pin_15)
 
 spiConfig :: SPI.Config
@@ -124,7 +124,7 @@ spiConfig = SPI.Config {
 initSPI :: MI ()
 initSPI = do
   initMI
-  API.resetHalt  
+  API.resetHalt
   setDefaultClocks
   SPI.deInit SPI2
   peripheralClockOn GPIOB
@@ -140,9 +140,9 @@ initSPI = do
 sendSPI :: BS.ByteString -> MI ()
 sendSPI bs = do
   let len = BS.length bs
-      dmaBuffer = 0x20001000 
+      dmaBuffer = 0x20001000
       dmaConfig = DMA.Config {
-        _BufferSize         = fromIntegral $ len
+        _BufferSize         = fromIntegral len
        ,_Direction          = PeripheralDST
        ,_MemoryBaseAddr     = dmaBuffer
        ,_MemoryDataSize     = Byte
@@ -151,13 +151,13 @@ sendSPI bs = do
        ,_PeripheralBaseAddr = regToAddr SPI2 DR
        ,_PeripheralDataSize = Byte
        ,_PeripheralInc      = False
-       ,_Priority           = DMA.High                              
+       ,_Priority           = DMA.High
       }
   writeMem8 dmaBuffer bs
 
   peripheralClockOn DMA1
   DMA.deInit DMA1_Channel5
-  
+
   DMA.disable DMA1_Channel5
   DMA.init DMA1_Channel5 dmaConfig
   DMA.enable DMA1_Channel5
@@ -173,7 +173,7 @@ testWave = runMI $ do
     loop t = do
      let colors = [RGB (redIntensity $ wave t st i)
                        (redIntensity $ wave (-t*0.5) st i) 0
-                  | i <- [0..15]] 
+                  | i <- [0..15]]
      sendSPI $ encodeRGBLine colors
      delay 1000
      loop $ t + 0.1
@@ -203,10 +203,10 @@ testPattern = runMI $ loop config
 
     config :: [([RGB], Int, Bool)]
     config = zip3 (tails pat) speed rev
-      
+
     pat = cycle [red, red, red, green, green, blue, blue, blue, black, black, black ,black, black]
-    speed = cycle ((reverse ramp ++ (replicate 300 acc) ++ ramp) ++ reverse (reverse ramp ++ (replicate 300 acc) ++ ramp))
+    speed = cycle ((reverse ramp ++ replicate 300 acc ++ ramp) ++ reverse (reverse ramp ++ replicate 300 acc ++ ramp))
     ramp  = [acc, acc+acc..400000]
     acc = 10000
     rev = cycle $ replicate 100 True ++ replicate 100 False
-    
+

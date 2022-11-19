@@ -2,15 +2,15 @@
 -- |
 -- Module      :  App.LCDDemo
 -- License     :  BSD3
--- 
+--
 -- Stability   :  experimental
 -- Portability :  GHC-only
 --
 -- The LCDDemo module has been copied from
 -- System.Hardware.Arduino.Parts.TestLCD in the hArduino package.
 -- The original Author of this code is Levent Erkok.
--- There have been some minor adaption for STM32. 
-
+-- There have been some minor adaption for STM32.
+{- HLINT ignore -}
 module App.TestLCD
 where
 import App.LCD
@@ -19,8 +19,8 @@ import STM32.API
 import STM32.GPIO as GPIO
 import Control.Monad.IO.Class
 import Data.Char           (isSpace)
-       
-       
+
+
 port :: Peripheral
 port = GPIOB
 

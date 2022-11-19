@@ -43,8 +43,8 @@ Via the SWD interface the PC can read and write the controller CPU
 address space and access the memory-mapped hardware registers.
 
 ## API
-The STM32-Zombie library is modeled after the STMicroelectronics 
-STM32F10x firmware library which provides a low level interface to the 
+The STM32-Zombie library is modeled after the STMicroelectronics
+STM32F10x firmware library which provides a low level interface to the
 controller hardware.
 This API is suitable for bare metal hardware hacking but also allows to build
 higher level interfaces.
@@ -80,7 +80,7 @@ This is the original code from the hArduino library
 with some very small adaptions.
 ### App.WS1228B
 A driver for nice colorful RGB LED strips.
-(Uses SPI and DMA) 
+(Uses SPI and DMA)
 ### App.Serial
 Hello world example for serial ports.
 
@@ -97,7 +97,7 @@ The STLinkUSB package contains a Haskell driver for ST-Link USB dongles.
 The library is based on information from the openocd library.
 The STM32-Zombie package only uses a small subset of the ST-Link features
 and only these features of ST-Link protocol are really tested and included
-in STLinkUSB. (There is some extra but untested code). 
+in STLinkUSB. (There is some extra but untested code).
 
 ### STM32F103xx-SVD
 [![Hackage](https://img.shields.io/hackage/v/STM32F103xx-SVD.svg)](http://hackage.haskell.org/package/STM32F103xx-SVD)

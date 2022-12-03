@@ -28,42 +28,19 @@ where
 import Control.Monad.Trans.Reader
 import Control.Monad.IO.Class
 import Control.Concurrent (threadDelay)
-import Control.Exception (SomeException(..), catch)
 
 import qualified Data.ByteString as BS
-
-import qualified System.USB as USB (Status(..), USBException(..), readBulk, writeBulk)
 
 import STM32.STLinkUSB.Commands hiding (Status)
 import STM32.STLinkUSB.Env
 import STM32.STLinkUSB.USB
 
-usbReadTimeout :: Int
-usbReadTimeout = 1000
-
-usbWriteTimeout :: Int
-usbWriteTimeout = 100
-
-fromUSBStatus :: USB.Status -> Status
-fromUSBStatus = \case
-  USB.Completed -> Completed
-  USB.TimedOut  -> TimedOut
-
 writeCMD :: Cmd -> STL (Size, Status)
 writeCMD cmd
-  = ReaderT $ \STLinkEnv {..} -> liftIO $ do
-    (size, status) <- USB.writeBulk deviceHandle txEndpoint (cmdToByteString cmd) usbWriteTimeout
-    return (size, fromUSBStatus status)
+  = ReaderT $ \STLinkEnv {..} -> liftIO $ writeBulk $ cmdToByteString cmd
 
 readBulkSTL :: STL (BS.ByteString, Either USBException Status)
-readBulkSTL = ReaderT $ \STLinkEnv {..} -> do
-  let readAction = do
-        (r, s) <- USB.readBulk deviceHandle rxEndpoint 64 usbReadTimeout
-        return (r, Right $ fromUSBStatus s)
-  liftIO $ catch readAction handler
-  where
-    handler :: USB.USBException -> IO (BS.ByteString, Either USBException Status)
-    handler e = return  (BS.empty, Left $ SomeException e)
+readBulkSTL = ReaderT $ \STLinkEnv {..} -> liftIO readBulk
 
 xferStatus :: Cmd -> STL (BS.ByteString, Either USBException Status)
 xferStatus cmd = do
@@ -79,7 +56,7 @@ xferBulkWrite cmd block = do
   writeResult1 <- writeCMD cmd
   debugSTL Debug $ show ("xferBulkWrite : ", cmd, writeResult1)
   writeResult2 <- ReaderT $ \STLinkEnv {..} -> do
-      liftIO $ USB.writeBulk deviceHandle txEndpoint block usbWriteTimeout
+      liftIO $ writeBulk block
   debugSTL Debug $ show ("xferBulkWrite result : ", writeResult2)
 
 xfer :: Cmd -> STL BS.ByteString

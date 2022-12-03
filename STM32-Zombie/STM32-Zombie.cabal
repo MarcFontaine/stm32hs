@@ -30,6 +30,21 @@ Source-Repository head
   type:     git
   location: git://github.com/MarcFontaine/stm32hs
 
+Extra-Source-Files:  CHANGELOG.md
+                    ,README.md
+                    ,samples/README.md
+                    ,js/*.html
+                    ,js/*.css
+                    ,js/*.js
+                    ,js/lib/*.js
+
+Data-dir:           .
+Data-files:          samples/static/css/*.css
+                    ,samples/static/css/*.png
+                    ,samples/static/*.html
+                    ,samples/static/*.png
+                    ,samples/static/*.wav
+
 common project-config
   default-language:     Haskell2010
 
@@ -43,6 +58,7 @@ common project-config
                         -Werror
   
 library
+  import            : project-config
   default-language  : Haskell2010
   ghc-options       : -Werror
   build-depends     : base  >= 4 && < 5
@@ -52,6 +68,7 @@ library
                     , binary
                     , STM32F103xx-SVD <0.2
                     , STLinkUSB <0.2
+                    , STLink-libusb
 
   hs-source-dirs: src
   exposed-modules:
@@ -81,3 +98,16 @@ library
     , App.DMABuffer
     , App.WS1228B
     , App.TLC5947
+
+executable webdemo
+  import:             project-config
+  hs-source-dirs:       src, app
+  main-is:              demo.hs
+  ghc-options:          -threaded -rtsopts "-with-rtsopts=-T"
+  modules:         WebBlink
+  other-modules:   Paths_STM32_Zombie
+
+  build-depends:   base
+                 , filepath
+                 , threepenny-gui
+                 , STM32-Zombie

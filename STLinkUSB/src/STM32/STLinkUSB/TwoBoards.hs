@@ -20,7 +20,6 @@ import System.USB
 import Control.Monad.Trans.Reader
 import Control.Monad.IO.Class
 
-import STM32.STLinkUSB.USBUtils
 import STM32.STLinkUSB.Env
 import STM32.STLinkUSB.Commands
 import STM32.STLinkUSB.Dongle

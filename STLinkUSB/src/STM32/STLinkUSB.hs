@@ -20,11 +20,10 @@
 
 module STM32.STLinkUSB
 (
-   test
-  ,STLT
+   STLT
   ,STL
   ,STLinkEnv
-  ,runSTLink
+  ,runSTLink'
   ,initDongle
   ,resetHalt
   ,writeDebugReg
@@ -41,5 +40,4 @@ import STM32.STLinkUSB.Env
 import STM32.STLinkUSB.USBXfer
 import STM32.STLinkUSB.MemRW
 import STM32.STLinkUSB.Dongle
-import STM32.STLinkUSB.Test
 import STM32.STLinkUSB.CortexM

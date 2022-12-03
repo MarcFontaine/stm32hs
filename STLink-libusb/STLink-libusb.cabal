@@ -1,0 +1,36 @@
+Cabal-Version: 3.0
+
+Name:          STLink-libusb
+Version:       0.1.2
+Category:      Hardware, STM32, Microcontroller, Embedded
+License-File:  LICENSE
+Synopsis:      STLink USB interface in Haskell
+Description:   This package contains a backend for STLinkUSB,
+               that is base on the usb Haskell library.
+               The usb library itself is based on libusb.
+
+License:       BSD-3-Clause
+Author:        2015-2022 Marc Fontaine <Marc.Fontaine@gmx.de>
+Maintainer:    2015-2022 Marc Fontaine <Marc.Fontaine@gmx.de>
+Stability:     Experimental
+Tested-With:   GHC ==8.10.7 || ==8.6.5 || ==8.4.4 || ==8.2.2
+Build-Type:    Simple
+Homepage:      https://github.com/MarcFontaine/stm32hs
+Extra-Source-Files:  README.md
+
+Source-Repository head
+  type:     git
+  location: git://github.com/MarcFontaine/stm32hs.git
+
+library
+  default-language  : Haskell2010
+  ghc-options       : -Wall -Werror
+  Build-depends     : base  >= 4.9 && < 5
+                    , bytestring >= 0.10 && < 0.11
+                    , usb >= 1.3 && < 1.4
+                    , vector >= 0.12 && < 0.13
+                    , STLinkUSB
+  hs-source-dirs: src
+  Exposed-modules: STM32.STLinkUSB.LibUSB
+
+

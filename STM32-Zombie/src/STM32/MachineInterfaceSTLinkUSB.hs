@@ -35,21 +35,23 @@ module STM32.MachineInterfaceSTLinkUSB
 )
 
 where
-
-import STM32.STLinkUSB
-
-import Data.Word
+import Control.Monad.Trans.Reader
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as BSL (toStrict,fromStrict)
+import Data.Word
 
 import Data.Binary.Put
 import Data.Binary.Get
+
+import STM32.STLinkUSB
+import STM32.STLinkUSB.Env
+import STM32.STLinkUSB.LibUSB (findEndpoint, withEndpoint)
 
 type Addr = Word32
 type MI a = STLT IO a
 
 runMI :: MI a -> IO a
-runMI = runSTLink
+runMI = runSTLink' defaultDebugLogger findEndpoint withEndpoint . runReaderT
 
 initMI :: MI ()
 initMI = initDongle

@@ -17,48 +17,38 @@
 module STM32.STLinkUSB.Env
 where
 
-import System.USB (Ctx, EndpointAddress, Device, DeviceHandle)
 import Control.Monad.Trans.Reader
 import Control.Monad.IO.Class
 
-import STM32.STLinkUSB.USBUtils
+import STM32.STLinkUSB.USB
 import STM32.STLinkUSB.Commands (API(..))
 
 type STLT m a = ReaderT STLinkEnv m a
 type STL a = forall m. MonadIO m => ReaderT STLinkEnv m a
 
-runSTLink :: STLT IO a  -> IO a
-runSTLink = runSTLink' defaultDebugLogger . runReaderT
+-- runSTLink :: STLT IO a  -> IO a
+-- runSTLink = runSTLink' defaultDebugLogger . runReaderT
 
-runSTLink_verbose :: STLT IO a  -> IO a
-runSTLink_verbose = runSTLink' verboseDebugLogger . runReaderT
+-- runSTLink_verbose :: STLT IO a  -> IO a
+-- runSTLink_verbose = runSTLink' verboseDebugLogger . runReaderT
 
-runSTLink' :: Logger -> (STLinkEnv -> IO a) -> IO a
-runSTLink' logger action = do
-  usb <- findDefaultEndpoints
-  runSTLinkWith logger usb action
-
-runSTLinkWith ::
-      Logger
-   -> (Ctx, Device, EndpointAddress, EndpointAddress, EndpointAddress)
-   -> (STLinkEnv -> IO a)
-   -> IO a
-runSTLinkWith
-     debugLogger
-     (usbCtx, device, rxEndpoint, txEndpoint, traceEndpoint)
-     action
-  =  withUSB device $ \deviceHandle -> action STLinkEnv {..}
+runSTLink'
+  :: Logger
+  -> FindEndpoint ep
+  -> WithEndpoint ep a
+  -> (STLinkEnv -> IO a)
+  -> IO a
+runSTLink' debugLogger findEndpoint withEndpoint action = do
+   ep <- findEndpoint
+   withEndpoint ep $ \(readBulk, writeBulk) -> action STLinkEnv {..}
   where
     dongleAPI = APIV2
 
 data STLinkEnv = STLinkEnv {
-   usbCtx :: Ctx
-  ,rxEndpoint :: EndpointAddress
-  ,txEndpoint :: EndpointAddress
-  ,traceEndpoint :: EndpointAddress
-  ,deviceHandle ::  DeviceHandle
-  ,dongleAPI  :: API
-  ,debugLogger :: Logger
+    debugLogger :: Logger
+  , dongleAPI  :: API
+  , readBulk  :: ReadBulk
+  , writeBulk :: WriteBulk
   }
 
 asksDongleAPI :: STL API

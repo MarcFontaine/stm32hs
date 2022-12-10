@@ -23,8 +23,8 @@ import Control.Monad.IO.Class
 import STM32.STLinkUSB.USB
 import STM32.STLinkUSB.Commands (API(..))
 
-type STLT m a = ReaderT STLinkEnv m a
-type STL a = forall m. MonadIO m => ReaderT STLinkEnv m a
+type STLT m a = ReaderT (STLinkEnv m) m a
+type STL a = forall m. MonadIO m => STLT m a
 
 -- runSTLink :: STLT IO a  -> IO a
 -- runSTLink = runSTLink' defaultDebugLogger . runReaderT
@@ -33,41 +33,42 @@ type STL a = forall m. MonadIO m => ReaderT STLinkEnv m a
 -- runSTLink_verbose = runSTLink' verboseDebugLogger . runReaderT
 
 runSTLink'
-  :: Logger
-  -> FindEndpoint ep
-  -> WithEndpoint ep a
-  -> (STLinkEnv -> IO a)
-  -> IO a
+  :: Monad m
+  => Logger m
+  -> FindEndpoint m ep
+  -> WithEndpoint m ep a
+  -> (STLinkEnv m -> m a)
+  -> m a
 runSTLink' debugLogger findEndpoint withEndpoint action = do
    ep <- findEndpoint
    withEndpoint ep $ \(readBulk, writeBulk) -> action STLinkEnv {..}
   where
     dongleAPI = APIV2
 
-data STLinkEnv = STLinkEnv {
-    debugLogger :: Logger
+data STLinkEnv m = STLinkEnv {
+    debugLogger :: Logger m
   , dongleAPI  :: API
-  , readBulk  :: ReadBulk
-  , writeBulk :: WriteBulk
+  , readBulk  :: ReadBulk m
+  , writeBulk :: WriteBulk m
   }
 
 asksDongleAPI :: STL API
 asksDongleAPI = asks dongleAPI
 
 data LogLevel = Debug | Info | Warn | Error deriving (Show,Eq,Ord)
-type Logger = LogLevel -> String -> IO ()
+type Logger m = Monad m => LogLevel -> String -> m ()
 
-debugSTL :: LogLevel -> String -> STL ()
+debugSTL :: Monad m => LogLevel -> String -> STLT m ()
 debugSTL ll msg = do
   logger <- asks debugLogger
-  liftIO $ logger ll msg
+  ReaderT $ const $ logger ll msg
 
-defaultDebugLogger :: Logger
+defaultDebugLogger :: MonadIO m => Logger m
 defaultDebugLogger logLevel msg = case logLevel of
   Debug -> return ()
   Info  -> return ()
-  _ -> putStrLn (show logLevel ++ " : " ++ msg )
+  _ -> liftIO $ putStrLn (show logLevel ++ " : " ++ msg )
 
-verboseDebugLogger :: Logger
+verboseDebugLogger :: MonadIO m => Logger m
 verboseDebugLogger logLevel msg
-  = putStrLn (show logLevel ++ " : " ++ msg )
+  = liftIO $ putStrLn (show logLevel ++ " : " ++ msg )

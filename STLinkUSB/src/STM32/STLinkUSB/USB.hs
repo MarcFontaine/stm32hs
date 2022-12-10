@@ -30,10 +30,10 @@ import qualified Data.ByteString as BS
 
 type USBException = SomeException
 
-type ReadBulk = IO (BS.ByteString, Either USBException Status)
-type WriteBulk = BS.ByteString -> IO (Size, Status)
-type FindEndpoint a = IO a
-type WithEndpoint a b = a -> ((ReadBulk, WriteBulk) -> IO b) -> IO b
+type ReadBulk m = m (BS.ByteString, Either USBException Status)
+type WriteBulk m = BS.ByteString -> m (Size, Status)
+type FindEndpoint m a = m a
+type WithEndpoint m a b = a -> ((ReadBulk m, WriteBulk m) -> m b) -> m b
 
 data Status = Completed | TimedOut
   deriving (Eq, Read, Show)

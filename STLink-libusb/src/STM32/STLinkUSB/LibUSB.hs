@@ -23,7 +23,6 @@ where
 
 import Control.Exception (SomeException(..), catch)
 import Control.Monad
-import Control.Monad.IO.Class
 
 import qualified Data.ByteString as BS
 import qualified Data.Vector as Vector
@@ -74,7 +73,7 @@ defaultSTLProductID = 0x3748
 
 withEndpoint 
   :: (Ctx, Device, EndpointAddress, EndpointAddress, EndpointAddress)
-  -> ((ReadBulk, WriteBulk) -> IO b)
+  -> ((ReadBulk IO, WriteBulk IO) -> IO b)
   -> IO b
 withEndpoint  (_ctx, device, rxEndpoint, txEndpoint, _traceEndpoint) action
   = withDeviceHandle device $
@@ -82,8 +81,8 @@ withEndpoint  (_ctx, device, rxEndpoint, txEndpoint, _traceEndpoint) action
        $ action ( readBulkCallback deviceHandle rxEndpoint
                 , writeBulkCallback deviceHandle txEndpoint)
 
-readBulkCallback :: DeviceHandle -> EndpointAddress -> ReadBulk
-readBulkCallback deviceHandle rxEndpoint = liftIO $ catch readAction handler
+readBulkCallback :: DeviceHandle -> EndpointAddress -> ReadBulk IO
+readBulkCallback deviceHandle rxEndpoint = catch readAction handler
   where
     readAction = do
       (r, s) <- USB.readBulk deviceHandle rxEndpoint 64 usbReadTimeout
@@ -92,7 +91,7 @@ readBulkCallback deviceHandle rxEndpoint = liftIO $ catch readAction handler
     handler :: USB.USBException -> IO (BS.ByteString, Either USBException Status)
     handler e = return  (BS.empty, Left $ SomeException e)
 
-writeBulkCallback :: DeviceHandle -> EndpointAddress -> WriteBulk
+writeBulkCallback :: DeviceHandle -> EndpointAddress -> WriteBulk IO
 writeBulkCallback deviceHandle txEndpoint byteString = do
   (size, status) <- USB.writeBulk deviceHandle txEndpoint byteString usbWriteTimeout
   return (size, fromUSBStatus status)

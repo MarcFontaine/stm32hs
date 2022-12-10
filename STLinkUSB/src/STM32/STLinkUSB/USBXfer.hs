@@ -35,12 +35,12 @@ import STM32.STLinkUSB.Commands hiding (Status)
 import STM32.STLinkUSB.Env
 import STM32.STLinkUSB.USB
 
-writeCMD :: Cmd -> STL (Size, Status)
+writeCMD :: Monad m => Cmd -> STLT m (Size, Status)
 writeCMD cmd
-  = ReaderT $ \STLinkEnv {..} -> liftIO $ writeBulk $ cmdToByteString cmd
+  = ReaderT $ \STLinkEnv {..} -> writeBulk $ cmdToByteString cmd
 
-readBulkSTL :: STL (BS.ByteString, Either USBException Status)
-readBulkSTL = ReaderT $ \STLinkEnv {..} -> liftIO readBulk
+readBulkSTL :: Monad m => STLT m (BS.ByteString, Either USBException Status)
+readBulkSTL = ReaderT $ \STLinkEnv {..} -> readBulk
 
 xferStatus :: Cmd -> STL (BS.ByteString, Either USBException Status)
 xferStatus cmd = do
@@ -51,12 +51,11 @@ xferStatus cmd = do
   debugSTL Debug $ show ("xferStatus readResult : ", retStatus, BS.unpack retMsg)
   return (retMsg, retStatus)
 
-xferBulkWrite :: Cmd -> BS.ByteString -> STL ()
+xferBulkWrite :: Monad m => Cmd -> BS.ByteString -> STLT m ()
 xferBulkWrite cmd block = do
   writeResult1 <- writeCMD cmd
   debugSTL Debug $ show ("xferBulkWrite : ", cmd, writeResult1)
-  writeResult2 <- ReaderT $ \STLinkEnv {..} -> do
-      liftIO $ writeBulk block
+  writeResult2 <- ReaderT $ \STLinkEnv {..} -> writeBulk block
   debugSTL Debug $ show ("xferBulkWrite result : ", writeResult2)
 
 xfer :: Cmd -> STL BS.ByteString

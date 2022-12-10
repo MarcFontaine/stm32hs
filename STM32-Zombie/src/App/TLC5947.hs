@@ -16,7 +16,7 @@ where
 import Prelude hiding (sin)
 import Control.Monad
 import Data.Bits
-import Data.List
+import qualified Data.List as List
 
 import STM32.API
 import STM32.GPIO as GPIO
@@ -60,7 +60,7 @@ animateBitBang = runMI $ do
       togglePin xlat
 
 animation :: [[Word16]]
-animation = take 24 $ map (take 24) $ tails $ cycle (map ((*) (4096 `div` 23)) [0..23])
+animation = take 24 $ map (take 24) $ List.tails $ cycle (map ((*) (4096 `div` 23)) [0..23])
 
 togglePin :: Wire -> MI ()
 togglePin w = do

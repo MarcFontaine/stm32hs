@@ -47,7 +47,7 @@ xferStatus cmd = do
   debugSTL Debug $ show ("xferStatus write :", cmd)
   writeResult <- writeCMD cmd
   debugSTL Debug $ show ("xferStatus writeResult :", cmd, writeResult)
-  (retMsg,retStatus) <- readBulkSTL
+  (retMsg, retStatus) <- readBulkSTL
   debugSTL Debug $ show ("xferStatus readResult : ", retStatus, BS.unpack retMsg)
   return (retMsg, retStatus)
 
@@ -58,7 +58,7 @@ xferBulkWrite cmd block = do
   writeResult2 <- ReaderT $ \STLinkEnv {..} -> writeBulk block
   debugSTL Debug $ show ("xferBulkWrite result : ", writeResult2)
 
-xfer :: Cmd -> STL BS.ByteString
+xfer :: MonadIO m => Cmd -> STLT m BS.ByteString
 xfer cmd = do
   (ret,err) <- xferStatus cmd
   case err of
@@ -74,7 +74,7 @@ xfer cmd = do
 
 -- todo xferRetry is expected to fail
 -- it should not throw an exception but return an error
-xferRetry :: Cmd -> STL BS.ByteString
+xferRetry :: MonadIO m => Cmd -> STLT m BS.ByteString
 xferRetry cmd = loop 8 10000
   where
     exit :: Show x => x -> STL BS.ByteString
@@ -92,8 +92,8 @@ xferRetry cmd = loop 8 10000
               SWD_AP_WAIT -> retry
               SWD_DP_WAIT -> retry
               DEBUG_ERR_OK -> return msg
-              dongleStatus -> exit ("xferRetry dongle error ",dongleStatus)
-          Right other -> exit ("xferRetry usb error ",other)
+              dongleStatus -> exit ("xferRetry dongle error ", dongleStatus)
+          Right other -> exit ("xferRetry usb error ", other)
        where
          retry = do
            debugSTL Warn ("xferRetry retry after delay ("++ show cmd ++")")

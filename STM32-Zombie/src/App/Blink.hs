@@ -13,14 +13,15 @@
 module App.Blink
 where
 import Control.Monad
+import Control.Monad.IO.Class
 
 import STM32.API
 import STM32.GPIO as GPIO
 
 blink :: IO ()
-blink = runMI $ blinkLED (GPIOC,Pin_13)
+blink = runMI $ blinkLED (GPIOC, Pin_13)
 
-blinkLED :: Wire -> MI ()
+blinkLED :: MonadIO m => Wire -> STLT m ()
 blinkLED led = do
   initMI
   resetHalt

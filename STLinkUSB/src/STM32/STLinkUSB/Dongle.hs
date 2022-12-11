@@ -29,7 +29,7 @@ import STM32.STLinkUSB.USBXfer
 -- | Init the dongle and set debug mode.
 -- A Haskell translation of the same function in the openocd library.
 
-initDongle :: STL ()
+initDongle :: MonadIO m => STLT m ()
 initDongle = do
   debugSTL Debug "starting initDongle"
   v <- readVersion
@@ -52,19 +52,19 @@ initDongle = do
     debugSTL Error err
     error err
 
-reset :: STL ()
+reset :: MonadIO m => STLT m ()
 reset = do
   debugSTL Info "resetting dongle"
   api <- asks dongleAPI
   void $ xferRetry (DEBUG_COMMAND $ RESETSYS api)
 
-readVersion :: STL Version
+readVersion ::  MonadIO m => STLT m Version
 readVersion = do
   debugSTL Debug "reading dongle version"
   msg <- xfer GET_VERSION
   return $ decode $ BSL.fromStrict msg
 
-readVoltage :: STL Float
+readVoltage :: MonadIO m => STLT m Float
 readVoltage = do
   debugSTL Debug "reading dongle voltage"
   msg <- xfer GET_TARGET_VOLTAGE
@@ -72,7 +72,7 @@ readVoltage = do
   return $
     2.4 * realToFrac b / realToFrac a
 
-readCurrentMode :: STL DevMode
+readCurrentMode :: MonadIO m => STLT m DevMode
 readCurrentMode = do
   debugSTL Debug "reading dongle mode"
   msg <- xfer GET_CURRENT_MODE

@@ -11,6 +11,7 @@
 -- Utility functions for hardware register access.
 
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE RankNTypes #-}
 module STM32.Utils
 where
 import STM32.MachineInterface

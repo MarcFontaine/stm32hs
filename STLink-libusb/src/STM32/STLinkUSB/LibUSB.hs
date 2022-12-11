@@ -69,8 +69,6 @@ findUSBDevices ctx stlProductID = do
 defaultSTLProductID :: ProductId
 defaultSTLProductID = 0x3748
 
--- type WithEndpoint a b = a -> ((ReadBulk, WriteBulk) -> IO b) -> IO b
-
 withEndpoint 
   :: (Ctx, Device, EndpointAddress, EndpointAddress, EndpointAddress)
   -> ((ReadBulk IO, WriteBulk IO) -> IO b)

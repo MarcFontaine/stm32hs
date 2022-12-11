@@ -50,6 +50,7 @@ data STLinkEnv m = STLinkEnv {
   , dongleAPI  :: API
   , readBulk  :: ReadBulk m
   , writeBulk :: WriteBulk m
+--  , delay :: Int -> m ()
   }
 
 asksDongleAPI :: STL API

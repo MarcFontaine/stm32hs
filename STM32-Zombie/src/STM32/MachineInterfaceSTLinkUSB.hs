@@ -14,6 +14,7 @@
 -- The main driver for ST-Link USB dongles is in the STLinkUSB package.
 -- This module contains some small wrappers for functions from STM32.STLinkUSB.
 --
+{-# LANGUAGE RankNTypes #-}
 
 module STM32.MachineInterfaceSTLinkUSB
 (
@@ -35,7 +36,9 @@ module STM32.MachineInterfaceSTLinkUSB
 )
 
 where
+import Control.Monad.IO.Class
 import Control.Monad.Trans.Reader
+
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Lazy as BSL (toStrict,fromStrict)
 import Data.Word
@@ -48,15 +51,16 @@ import STM32.STLinkUSB.Env
 import STM32.STLinkUSB.LibUSB (findEndpoint, withEndpoint)
 
 type Addr = Word32
-type MI a = STLT IO a
+--type MI a = STLT IO a
+type MI a = forall m. MonadIO m => STLT m a
 
 runMI :: MI a -> IO a
 runMI = runSTLink' defaultDebugLogger findEndpoint withEndpoint . runReaderT
 
-initMI :: MI ()
+initMI :: MonadIO m => STLT m ()
 initMI = initDongle
 
-resetHalt :: MI ()
+resetHalt :: MonadIO m => STLT m ()
 resetHalt = STM32.STLinkUSB.resetHalt
 
 peek_w16 :: Addr -> MI Word16

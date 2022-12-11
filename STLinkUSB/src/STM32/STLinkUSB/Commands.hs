@@ -1,8 +1,8 @@
 {-# LANGUAGE RecordWildCards #-}
 ----------------------------------------------------------------------------
 -- |
--- Module      :  STM32.Commands
--- Copyright   :  (c) Marc Fontaine 2017
+-- Module      :  STM32.STLinkUSB.Commands
+-- Copyright   :  (c) Marc Fontaine 2017 - 2022
 -- License     :  BSD3
 --
 -- Maintainer  :  Marc.Fontaine@gmx.de

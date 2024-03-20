@@ -4,9 +4,16 @@ packages:
   STM32F103xx-SVD
   STM32-Zombie
   SVD2HS
+--  threepenny-gui
 
-source-repository-package
-  type: git
-  location: https://github.com/MarcFontaine/threepenny-gui
-  tag: 6b6029c21d65eeb91ddfa8b32ccf1192e284fd18
-  --sha256: 1XRtn8tc2Q5xgup1qjIOvKmRIdxd6F17kt5h/iq4N7k=
+-- source-repository-package
+--   type: git
+--   location: https://github.com/MarcFontaine/threepenny-gui
+--  tag: 6b6029c21d65eeb91ddfa8b32ccf1192e284fd18
+-- sha256: 1XRtn8tc2Q5xgup1qjIOvKmRIdxd6F17kt5h/iq4N7k=
+
+-- source-repository-package
+-- type: git
+-- location: ssh:fontaine@localhost://var2/threepenny-gui
+-- tag: 6b6029c21d65eeb91ddfa8b32ccf1192e284fd18
+--sha256: 1XRtn8tc2Q5xgup1qjIOvKmRIdxd6F17kt5h/iq4N7k=

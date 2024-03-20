@@ -1,0 +1,37 @@
+navigator.usb.requestDevice({ filters: [{ vendorId: 0x0483 }] }) }] });
+
+
+
+navigator.usb.requestDevice({ filters: [{ vendorId: 0x0483 }] })
+.then(device => {
+  console.log(device.productName);
+  console.log(device.manufacturerName);
+})
+.catch(error => { console.error(error); });
+
+
+
+usb-adb-connect -> android chrome open ->  PC: chrome://inspect/#devices
+https://permission.site/
+
+
+nix-shell -p scrcpy
+scrcpy --max-size=1024
+
+https://github.com/Genymobile/scrcpy
+
+
+adb logcat -s "com.tailscale.ipn:*"
+
+
+
+https://2ho.ca/
+https://sourceforge.net/software/compare/Tailscale-vs-ZeroTier/
+netmaker
+
+
+homeassistent: https://github.com/smasher164/nas/blob/main/configuration.nix
+
+Netmaker and Innernet are the two Tailscale alternatives which are using WireGuard
+
+https://github.com/mikeroyal/Self-Hosting-Guide

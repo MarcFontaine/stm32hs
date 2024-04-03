@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  STM32.STLinkUSB.LibUSB
--- Copyright   :  (c) Marc Fontaine 2017-2022
+-- Copyright   :  (c) Marc Fontaine 2017-2024
 -- License     :  BSD3
 --
 -- Maintainer  :  Marc.Fontaine@gmx.de

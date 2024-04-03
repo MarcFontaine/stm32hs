@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- |
 -- Module      :  App.WS1228B
--- Copyright   :  (c) Marc Fontaine 2017-2022
+-- Copyright   :  (c) Marc Fontaine 2017-2024
 -- License     :  BSD3
 --
 -- Maintainer  :  Marc.Fontaine@gmx.de
@@ -26,11 +26,12 @@ import STM32.SPI as SPI
 import STM32.DMA as DMA
 
 import qualified Data.ByteString as BS
--- import Control.Monad
 import Data.List (tails)
+import qualified Data.Array.Unboxed as Array
+import Data.Array.Unboxed (UArray)
 
 data RGB = RGB Word8 Word8 Word8
-  deriving (Read,Show,Eq,Ord)
+  deriving (Read, Show, Eq, Ord)
 
 -- | show some color pattern
 testLEDs :: IO ()
@@ -79,7 +80,7 @@ encodeRGB (RGB r g b)
 
 -- | Encode an Word8 according to the WS1228B line code.
 -- Each data bit is extended to a three bit line code.
-lineCodeWord8 :: Word8 -> (Word8,Word8,Word8)
+lineCodeWord8 :: Word8 -> (Word8, Word8, Word8)
 lineCodeWord8 b = (c1,c2,c3)
   where
     c1 = fromIntegral ((mix32 `shiftR` 16) .&. 0xff)
@@ -102,10 +103,10 @@ spi_miso=(GPIOB,Pin_14)
 -}
 led :: Wire
 --led = (GPIOC,Pin_13)
-led = (GPIOA,Pin_12)
+led = (GPIOA, Pin_12)
 
 spi_mosi :: Wire
-spi_mosi=(GPIOB,Pin_15)
+spi_mosi = (GPIOB, Pin_15)
 
 spiConfig :: SPI.Config
 spiConfig = SPI.Config {
@@ -164,42 +165,69 @@ sendSPI bs = do
 
   return ()
 
--- | Animate a LED strip and show some wave-like lighting pattern.
+-- | Animate a LED strip and show some wave-like lightning pattern.
 testWave :: IO ()
 testWave = runMI $ do
   initSPI
   let
-    st = 2*pi/10
+    st = 2*pi/60
     loop t = do
-     let colors = [RGB (redIntensity $ wave t st i)
-                       (redIntensity $ wave (-t*0.5) st i) 0
-                  | i <- [0..15]]
+     let colors = [ gammaCorrect
+                     (wave t st i)
+                     (wave (t*0.5) st i)
+                     (wave (t*0.1) st i)
+                  | i <- [0..59]]
      sendSPI $ encodeRGBLine colors
-     delay 1000
-     loop $ t + 0.1
+     delay 500
+     loop $ t + 0.23
   loop 0
 
 wave :: Double -> Double -> Int -> Double
 wave t st i = (sin (t+st* fromIntegral i) +1) /2
 
-redIntensity :: Double -> Word8
-redIntensity d =
-  if d >0.4 then floor (d*5)
-  else 0
+gammaCorrect :: Double -> Double -> Double -> RGB
+gammaCorrect r g b = RGB rb gb bb
+  where
+    rb = gammaTable Array.! (floor $ r * 256)
+    gb = gammaTable Array.! (floor $ g * 256)
+    bb = gammaTable Array.! (floor $ b * 256)
+
+-- http://rgb-123.com/ws2812-color-output/
+gammaTable :: UArray Word8 Word8
+gammaTable = Array.listArray (0,255) gammaList
+  where
+    gammaList :: [Word8]
+    gammaList = [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2,
+      2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5,
+      6, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 11, 11,
+      11, 12, 12, 13, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18,
+      19, 19, 20, 21, 21, 22, 22, 23, 23, 24, 25, 25, 26, 27, 27, 28,
+      29, 29, 30, 31, 31, 32, 33, 34, 34, 35, 36, 37, 37, 38, 39, 40,
+      40, 41, 42, 43, 44, 45, 46, 46, 47, 48, 49, 50, 51, 52, 53, 54,
+      55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
+      71, 72, 73, 74, 76, 77, 78, 79, 80, 81, 83, 84, 85, 86, 88, 89,
+      90, 91, 93, 94, 95, 96, 98, 99,100,102,103,104,106,107,109,110,
+      111,113,114,116,117,119,120,121,123,124,126,128,129,131,132,134,
+      135,137,138,140,142,143,145,146,148,150,151,153,155,157,158,160,
+      162,163,165,167,169,170,172,174,176,178,179,181,183,185,187,189,
+      191,193,194,196,198,200,202,204,206,208,210,212,214,216,218,220,
+      222,224,227,229,231,233,235,237,239,241,244,246,248,250,252,255 ]
 
 -- this leaks memory !!
 testPattern :: IO ()
 testPattern = runMI $ loop config
   where
     loop :: [([RGB], Int, Bool)] -> MI ()
-    loop conf = do
+    loop [] = return ();
+    loop ((p, d, dir) : next) = do
       let
-          (p, d, dir) = head conf
           p2 = (\x -> if dir then x else reverse x) $ take 15 p
           pe = reverse p2 ++ p2
       sendSPI $ encodeRGBLine pe
       delay d
-      loop $ tail conf
+      loop next
 
     config :: [([RGB], Int, Bool)]
     config = zip3 (tails pat) speed rev
@@ -209,4 +237,3 @@ testPattern = runMI $ loop config
     ramp  = [acc, acc+acc..400000]
     acc = 10000
     rev = cycle $ replicate 100 True ++ replicate 100 False
-

@@ -169,7 +169,15 @@ transmit :: Bool -> LCDController -> Word8 -> MI ()
 transmit mode c@Hitachi44780{lcdRS, lcdEN, lcdD4, lcdD5, lcdD6, lcdD7} val = do
   digitalWrite lcdRS mode
   digitalWrite lcdEN False
-  let [b7, b6, b5, b4, b3, b2, b1, b0] = [val `testBit` i | i <- [7, 6 .. 0]]
+  let
+    b0 = val `testBit` 0
+    b1 = val `testBit` 1
+    b2 = val `testBit` 2
+    b3 = val `testBit` 3
+    b4 = val `testBit` 4
+    b5 = val `testBit` 5
+    b6 = val `testBit` 6
+    b7 = val `testBit` 7
   -- Send down the first 4 bits
   digitalWrite lcdD4 b4
   digitalWrite lcdD5 b5

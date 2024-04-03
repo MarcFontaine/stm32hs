@@ -11,43 +11,43 @@ Description:
             Features are GPIO pins, serial ports, SPI ports, DMA ADC, timers,..
             The library is modeled after the STMicroelectronics
             STM32F10x Firmware Library but does not rely on any c-code or
-            cross-compilation
+            cross-compilation.
             STM32-Zombie has a low-level interface, which
             allows one to control many details of the micro controller hardware
             and can also be used to build higher level abstraction.
             See the "App.Blink" module
-            and the [github page](https://github.com/MarcFontaine/stm32hs)
+            and the [github page](https://github.com/MarcFontaine/stm32hs).
 
-Copyright:     2015-2022 Marc Fontaine <Marc.Fontaine@gmx.de>
+Copyright:     2015-2024 Marc Fontaine <Marc.Fontaine@gmx.de>
 Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
 License:       BSD-3-Clause
 Stability:     Experimental
-Tested-With:   GHC ==8.10.7 || ==8.6.5 || ==8.4.4 || ==8.2.2
+Tested-With:   GHC == 9.8.2
 Author:        Marc Fontaine
 Build-Type:    Simple
+
+Extra-Source-Files:
+    samples/README.md
+    js/*.html
+    js/*.css
+    js/*.js
+    js/lib/*.js
+
+Data-dir:           .
+Data-files:
+    samples/static/css/*.css
+    samples/static/css/*.png
+    samples/static/*.html
+    samples/static/*.png
+    samples/static/*.wav
 
 Source-Repository head
   type:     git
   location: git://github.com/MarcFontaine/stm32hs
-
-Extra-Source-Files:  CHANGELOG.md
-                    ,README.md
-                    ,samples/README.md
-                    ,js/*.html
-                    ,js/*.css
-                    ,js/*.js
-                    ,js/lib/*.js
-
-Data-dir:           .
-Data-files:          samples/static/css/*.css
-                    ,samples/static/css/*.png
-                    ,samples/static/*.html
-                    ,samples/static/*.png
-                    ,samples/static/*.wav
-
+    
 common project-config
   default-language:     Haskell2010
-
+  default-extensions:   RankNTypes
   ghc-options:          -Wall
                         -Wcompat
                         -Wincomplete-record-updates
@@ -56,14 +56,12 @@ common project-config
                         -Wredundant-constraints
                         -Wunused-packages
                         -Werror
-  
+
 library
   import            : project-config
-  default-language  : Haskell2010
-  extentions        : RankNTypes
-  ghc-options       : -Werror -XRankNTypes
   build-depends     : base  >= 4 && < 5
                     , bytestring
+                    , array
                     , transformers
                     , binary
                     , STM32F103xx-SVD <0.2
@@ -73,47 +71,48 @@ library
   hs-source-dirs: src
   exposed-modules:
       STM32.API
-    , STM32.MachineInterfaceSTLinkUSB
-    , STM32.MachineInterface
-    , STM32.Utils
-    , STM32.GPIO
-    , STM32.USART
-    , STM32.RTC
-    , STM32.RCC
-    , STM32.PWR
-    , STM32.DMA
-    , STM32.ADC
-    , STM32.SPI
-    , STM32.I2C
-    , STM32.DAC
-    , STM32.Timer
-    , App.Blink
-    , App.Serial
-    , App.ADC
-    , App.TimerDMA
-    , App.RealTimeClock
-    , App.Stepper
-    , App.LCD
+      STM32.MachineInterfaceSTLinkUSB
+      STM32.MachineInterface
+      STM32.Utils
+      STM32.GPIO
+      STM32.USART
+      STM32.RTC
+      STM32.RCC
+      STM32.PWR
+      STM32.DMA
+      STM32.ADC
+      STM32.SPI
+      STM32.I2C
+      STM32.DAC
+      STM32.Timer
+      App.Blink
+      App.Serial
+      App.ADC
+      App.TimerDMA
+      App.RealTimeClock
+      App.Stepper
+      App.LCD
 --    , App.TestLCD # needs fix IO
-    , App.DMABuffer
-    , App.WS1228B
-    , App.TLC5947
+      App.DMABuffer
+      App.WS1228B
+      App.TLC5947
 
-executable webdemo
-  import:             project-config
-  hs-source-dirs:       src, app
-  main-is:              demo.hs
-  ghc-options:          -threaded -rtsopts "-with-rtsopts=-T" -XRankNTypes
-  modules:         WebBlink
-  other-modules:   Paths_STM32_Zombie
+--executable webdemo
+--  import:             project-config
+--  hs-source-dirs:       src, app
+--  main-is:              demo.hs
+--  ghc-options:          -threaded -rtsopts "-with-rtsopts=-T" -XRankNTypes
+--  modules:         WebBlink
+--  other-modules:   Paths_STM32_Zombie
 
-  build-depends:   base
-                 , bytestring
-                 , filepath
-                 , threepenny-gui
-                 , STM32-Zombie
-                 , STLinkUSB
-                 , binary
-                 , STLink-libusb
-                 , transformers
-                 , STM32F103xx-SVD
+--  build-depends:   base
+--                 , bytestring
+--                 , filepath
+--                 , threepenny-gui
+--                 , STM32-Zombie
+--                 , STLinkUSB
+--                 , binary
+--                 , STLink-libusb
+--                 , transformers
+--                 , STM32F103xx-SVD
+--

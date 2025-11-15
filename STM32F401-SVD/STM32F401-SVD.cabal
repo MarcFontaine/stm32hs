@@ -1,0 +1,29 @@
+Cabal-Version: 3.0
+
+Name:          STM32F401-SVD
+Version:       0.1
+Category:      STM32, Hardware, Microcontroller, Embedded
+License-File:  LicenseInfo
+Synopsis:      Definition for peripherals, registers and Fields
+               from STM32F401xx.svd
+Description:   Definition for peripherals, registers and Fields
+               from STM32F401xx.svv.
+               This package contains tables, that have been generated from the
+               corresponding svd file. Do not edit.
+License:       BSD-3-Clause
+Author:        Marc Fontaine <Marc.Fontaine@gmx.de>
+Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
+Stability:     Experimental
+Tested-With:   GHC ==8.10.7 || ==8.6.5 || ==8.4.4 || ==8.2.2
+Build-Type:    Simple
+
+Source-Repository head
+  type:     git
+  location: git://github.com/MarcFontaine/stm32hs
+
+
+library
+  default-language  : Haskell2010
+  ghc-options       : -Wall
+  Build-depends     : base  >= 4 && < 5
+  Exposed-modules:  Device

@@ -1,0 +1,83 @@
+Cabal-Version: 3.0
+
+Name:          STM32F401-Zombie
+Version:       0.3.0.0
+Category:      STM32, Hardware, Microcontroller, Embedded
+License-File:  LICENSE
+Synopsis:      control a STM32F401 microcontroller
+Description:
+            The STM32-Zombie library turns a STM32F401 board into a
+            powerful Haskell hackable IO adapter.
+            Features are GPIO pins, serial ports, SPI ports, DMA ADC, timers,..
+            The library is modeled after the STMicroelectronics
+            STM32F10x Firmware Library but does not rely on any c-code or
+            cross-compilation.
+            STM32-Zombie has a low-level interface, which
+            allows one to control many details of the micro controller hardware
+            and can also be used to build higher level abstraction.
+            See the "App.Blink" module
+            and the [github page](https://github.com/MarcFontaine/stm32hs).
+
+Copyright:     2015-2025 Marc Fontaine <Marc.Fontaine@gmx.de>
+Maintainer:    Marc Fontaine <Marc.Fontaine@gmx.de>
+License:       BSD-3-Clause
+Stability:     Experimental
+Tested-With:   GHC == 9.8.2
+Author:        Marc Fontaine
+Build-Type:    Simple
+
+Source-Repository head
+  type:     git
+  location: git://github.com/MarcFontaine/stm32hs
+    
+common project-config
+  default-language:     Haskell2010
+  default-extensions:   RankNTypes
+  ghc-options:          -Wall
+                        -Wcompat
+                        -Wincomplete-record-updates
+                        -Wincomplete-uni-patterns
+                        -Wpartial-fields
+                        -Wredundant-constraints
+                        -Wunused-packages
+                        -Werror
+
+library
+  import            : project-config
+  build-depends     : base  >= 4 && < 5
+                    , bytestring
+                    , array
+                    , transformers
+                    , binary
+                    , STM32F401-SVD <0.2
+                    , STLinkUSB <0.2
+                    , STLink-libusb
+
+  hs-source-dirs: src
+  exposed-modules:
+      F401.API
+      F401.MachineInterfaceSTLinkUSB
+      F401.MachineInterface
+      F401.Utils
+      F401.GPIO
+--      F401.USART
+--      F401.RTC
+--      F401.RCC
+--      F401.PWR
+--      F401.DMA
+--      F401.ADC
+--      F401.SPI
+--      F401.I2C
+--      F401.DAC
+--      F401.Timer
+      App.Blink
+--      App.Serial
+--      App.ADC
+--      App.TimerDMA
+--      App.RealTimeClock
+--      App.Stepper
+--      App.LCD
+--      App.TestLCD # needs fix IO
+--      App.DMABuffer
+--      App.WS1228B
+--      App.TLC5947

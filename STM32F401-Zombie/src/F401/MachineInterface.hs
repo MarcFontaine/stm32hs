@@ -1,0 +1,29 @@
+----------------------------------------------------------------------------
+-- |
+-- Module      :  F401.MachineInterface
+-- Copyright   :  (c) Marc Fontaine 2025
+-- License     :  BSD3
+--
+-- Maintainer  :  Marc.Fontaine@gmx.de
+-- Stability   :  experimental
+-- Portability :  GHC-only
+--
+-- At the moment, there is just one implementation for the MachineInterface
+-- namely F401.MachineInterfaceSTLinkUSB.
+-- All direct communication with the micro controller runs through this API.
+--
+
+module F401.MachineInterface
+(
+   MI
+  ,runMI
+  ,initMI
+  ,resetHalt
+  ,peek_w16
+  ,poke_w16
+  ,peek_w32
+  ,poke_w32
+)
+where
+import           F401.MachineInterfaceSTLinkUSB
+

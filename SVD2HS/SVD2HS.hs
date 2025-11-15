@@ -14,6 +14,14 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 
+svdFile :: FilePath
+svdFile ="STM32F401.svd"
+
+main :: IO ()
+main = do
+  svd <- Text.XML.readFile def svdFile
+  Prelude.writeFile "Device.hs" $ svd2hs svd
+
 selectPeripheral ::
   Applicative f => (Element -> f Element) -> Document -> f Document
 
@@ -36,14 +44,6 @@ selectField = selectRegister ./ el "fields" ./ el "field"
 
 selectFieldName :: Applicative f => Over (->) f Document Document Text Text
 selectFieldName = selectField ./ el "name" . TXL.text
-
-svdFile :: FilePath
-svdFile ="STM32F103xx.svd"
-
-main :: IO ()
-main = do
-  svd <- Text.XML.readFile def svdFile
-  Prelude.writeFile "Device.hs" $ svd2hs svd
 
 svd2hs :: Document -> String
 svd2hs svd = render hsModule

@@ -1,4 +1,8 @@
-{ mkDerivation, base, stdenv }:
+{
+  mkDerivation,
+  base,
+  stdenv,
+}:
 mkDerivation {
   pname = "STM32F103xx-SVD";
   version = "0.1";
